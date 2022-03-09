@@ -10,4 +10,8 @@ app.get('/',(req:any,res:any)=>{
     res.send('<h1>Homepage IT Project</p>')
 });
 
+app.get('/',(req:any, res:any)=>{
+    res.render('exampleview.ejs')
+})
+
 app.listen(app.get('port'), ()=>console.log( '[server] http://localhost:' + app.get('port')));
