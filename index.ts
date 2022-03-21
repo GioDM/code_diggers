@@ -13,4 +13,8 @@ app.get('/reference', (req:any, res:any)=>{
     res.render('reference.ejs')
 })
 
+app.use(function(req:any,res:any){
+    res.status(404).render('404.ejs');
+});
+
 app.listen(app.get('port'), ()=>console.log( '[server] http://localhost:' + app.get('port')));
