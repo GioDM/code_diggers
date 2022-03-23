@@ -17,8 +17,16 @@ app.get('/legomasters/minifig', (req:any, res:any)=>{
     res.render('legomasters/minifig.ejs')
 })
 
+app.get('/legomasters/blacklist', (req:any, res:any)=>{
+    res.render('overzichtBlacklist.ejs')
+})
+
 app.get('/reference', (req:any, res:any)=>{
     res.render('reference.ejs')
+})
+
+app.get('/legomasters/', (req:any, res:any)=>{
+    res.render('legomasters/landing.ejs')
 })
 
 app.use(function(req:any,res:any){
