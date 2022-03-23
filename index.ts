@@ -9,6 +9,10 @@ app.get('/',(req:any, res:any)=>{
     res.render('projecten.ejs')
 })
 
+app.get('/legomasters/blacklist', (req:any, res:any)=>{
+    res.render('overzichtBlacklist.ejs')
+})
+
 app.get('/reference', (req:any, res:any)=>{
     res.render('reference.ejs')
 })
