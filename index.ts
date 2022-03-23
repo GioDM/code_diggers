@@ -5,10 +5,23 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('port', 3000);
 
+
 app.use('/public', express.static('public'));
 
-app.get('/', (req: any, res: any) => {
-    res.render('main.ejs')
+app.get('/',(req:any, res:any)=>{
+    res.render('projects.ejs')
+})
+
+app.get('/legomasters/', (req:any, res:any)=>{
+    res.render('legomasters/landing.ejs')
+})
+
+app.get('/legomasters/minifig', (req:any, res:any)=>{
+    res.render('legomasters/minifig.ejs')
+})
+
+app.get('/legomasters/blacklist', (req:any, res:any)=>{
+    res.render('legomasters/overzichtBlacklist.ejs')
 })
 
 app.get('/reference', (req: any, res: any) => {
