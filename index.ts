@@ -6,7 +6,7 @@ app.set('view engine', 'ejs');
 app.set('port', 3000);
 
 app.get('/',(req:any, res:any)=>{
-    res.render('main.ejs')
+    res.render('projecten.ejs')
 })
 
 app.get('/reference', (req:any, res:any)=>{
