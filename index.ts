@@ -17,6 +17,10 @@ app.get('/reference', (req:any, res:any)=>{
     res.render('reference.ejs')
 })
 
+app.get('/legomasters/', (req:any, res:any)=>{
+    res.render('legomasters/landing.ejs')
+})
+
 app.use(function(req:any,res:any){
     res.status(404).render('404.ejs');
 });
