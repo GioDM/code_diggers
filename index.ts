@@ -15,8 +15,8 @@ app.get('/reference', (req: any, res: any) => {
     res.render('reference.ejs')
 })
 
-app.get('/summary', (req: any, res: any) => {
-    res.render('summary.ejs')
+app.get('/legomasters/summary', (req: any, res: any) => {
+    res.render('legomasters/summary.ejs')
 })
 
 app.get('/header', (req: any, res: any) => {
