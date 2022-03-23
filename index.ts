@@ -9,31 +9,27 @@ app.set('port', 3000);
 app.use('/public', express.static('public'));
 
 app.get('/',(req:any, res:any)=>{
-    res.render('projects.ejs')
+    res.render('projects.ejs', { title: 'IT Project | Projecten' })
 })
 
 app.get('/legomasters/', (req:any, res:any)=>{
-    res.render('legomasters/landing.ejs')
+    res.render('legomasters/landing.ejs', { title: 'LegoMasters | Homescreen' })
 })
 
 app.get('/legomasters/minifig', (req:any, res:any)=>{
-    res.render('legomasters/minifig.ejs')
+    res.render('legomasters/minifig.ejs', { title: 'LegoMasters | Minifigs' })
 })
 
 app.get('/legomasters/blacklist', (req:any, res:any)=>{
-    res.render('legomasters/overzichtBlacklist.ejs')
+    res.render('legomasters/overzichtBlacklist.ejs', { title: 'LegoMasters | Blacklist' })
 })
 
 app.get('/reference', (req: any, res: any) => {
-    res.render('reference.ejs')
+    res.render('reference.ejs', { title: 'IT Project | References' })
 })
 
 app.get('/legomasters/summary', (req: any, res: any) => {
-    res.render('legomasters/summary.ejs')
-})
-
-app.get('/header', (req: any, res: any) => {
-    res.render('header.ejs')
+    res.render('legomasters/summary.ejs', { title: 'LegoMasters | Summary' })
 })
 
 app.use(function (req: any, res: any) {
