@@ -21,4 +21,4 @@ app.use(function(req:any,res:any){
     res.status(404).render('404.ejs');
 });
 
-app.listen(process.env.PORT);
+app.listen(app.get('port'), ()=>console.log( '[server] http://localhost:' + app.get('port')));
