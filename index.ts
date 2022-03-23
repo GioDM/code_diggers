@@ -9,7 +9,7 @@ app.get('/',(req:any, res:any)=>{
     res.render('projecten.ejs')
 })
 
-app.get('/blacklist', (req:any, res:any)=>{
+app.get('/legomasters/blacklist', (req:any, res:any)=>{
     res.render('overzichtBlacklist.ejs')
 })
 
