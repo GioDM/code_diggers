@@ -6,7 +6,15 @@ app.set('view engine', 'ejs');
 app.set('port', 3000);
 
 app.get('/',(req:any, res:any)=>{
-    res.render('projecten.ejs')
+    res.render('projects.ejs')
+})
+
+app.get('/legomasters', (req:any, res:any)=>{
+    res.render('legomasters/landing.ejs')
+})
+
+app.get('/legomasters/minifig', (req:any, res:any)=>{
+    res.render('legomasters/minifig.ejs')
 })
 
 app.get('/legomasters/blacklist', (req:any, res:any)=>{
