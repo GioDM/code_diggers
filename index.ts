@@ -13,8 +13,8 @@ app.get('/reference', (req:any, res:any)=>{
     res.render('reference.ejs')
 })
 
-app.get('/landing', (req:any, res:any)=>{
-    res.render('landing.ejs')
+app.get('/legomasters/', (req:any, res:any)=>{
+    res.render('legomasters/landing.ejs')
 })
 
 app.use(function(req:any,res:any){
