@@ -1,36 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="/public/assets/style.css">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
 </head>
 <body>
-    <center>
-        <div id="projectLegomasters">
-            <img alt="Legomasters logo" src="https://www.nineforbrands.com.au/wp-content/uploads/2021/01/LEMA_3D_Logotype.png" height="100px"/>
-            <a href="/legomasters"><p>Lego Masters</p></a>
-        </div>
-        <div id="projectFifa">
-            <img alt="fifa logo" src="" height="100px"/>
-            <a href="/404"><p>Fifa</p></a>
-        </div>
-        <div id="projectFortnite">
-            <img alt="fortnite logo" src="" height="100px"/>
-            <a href="/404"><p>Fortnite</p></a>
-        </div>
-        <div id="projectLotr">
-            <img alt="LOTR logo" src="" height="100px"/>
-            <a href="/404"><p>Lord of the Rings</p></a>
-        </div>
-        <div id="projectMagic">
-            <img alt="magic logo" src="" height="100px"/>
-            <a href="/404"><p>Magic the Gathering</p></a>
-        </div>
-        <div id="projectBank">
-            <img alt="Bank logo" src="" height="100px"/>
-            <a href="/404"><p>Nationale Bank (NBB)</p></a>
-        </div>
-    </center>
+    <div class="link-container">
+        <a id="nbb" class="link-img" href="/404">Project NBB</a>
+        <a id="lotr" class="link-img" href="/404">The One</a>
+        <a id="fifa" class="link-img" href="/404">FIFA</a>
+        <a id="fort" class="link-img" href="/404">Fortnite</a>
+        <a id="lego" class="link-img" href="/legomasters">Legomasters</a>
+        <a id="mtg" class="link-img" href="/404">MagicTheGathering</a>
+    </div>
 <%- include("footer.ejs") -%>

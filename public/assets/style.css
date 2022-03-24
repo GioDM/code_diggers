@@ -28,3 +28,39 @@
   height: 200px;
   padding: 5%;
 }
+
+/*START OF PROJECTPAGE CSS*/
+.link-container {
+  height: 31rem;
+  width: 26rem;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-gap: 2rem;
+
+}
+
+.link-img {
+  display: block;
+  text-align: center;
+  text-decoration: none;
+  line-height: 9rem; /*Must be the height of element to vertically center*/
+  color: rgba(0, 0, 0, 0);
+  background-image: url("https://cdn.pixabay.com/photo/2013/07/12/12/58/tv-test-pattern-146649__340.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-blend-mode: overlay;
+  transition: all 0.7s;
+}
+
+.link-img:hover {
+  color: white;
+  background-color: rgb( 70, 70, 70);
+}
+
+#lego {
+  background-image: url("https://www.lego.com/cdn/cs/set/assets/blt65bb8b098c075262/71032.png?fit=bounds&format=png&width=528&height=528&dpr=1");
+}
+/*END OF PROJECTPAGE CSS*/
