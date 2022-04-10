@@ -33,7 +33,7 @@ footer{
   width: 100%;
   margin-left: auto;
   margin-right: auto;
-  background-color: rgb( 70, 70, 70, 25);
+  background-color: rgb(39, 45, 45);
   padding-top: 5px;
   padding-bottom: 5px;
 }
@@ -42,6 +42,42 @@ footer{
   background-image: none;
   background-color: rgb(213, 219, 230);
 }
+
+/*START OF HEADER*/
+.menu{
+  display: flex;
+  align-items: center;
+  height: 3rem;
+  background-color: rgb(255, 210, 63);
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.menu-wrapper{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-right: auto;
+  margin-left: auto;
+  width: 115rem;
+}
+
+.menu-wrapper>nav>ul{
+  list-style-type: none;
+}
+
+.menu-wrapper>nav>ul>li{
+  float: left;
+}
+
+.menu-wrapper>nav>ul>li>a {
+  display: block;
+  color: rgb(187, 10, 33);
+  text-align: center;
+  padding: 1rem;
+  font-weight: 700;
+}
+/*END OF HEADER*/
 
 /*START OF PROJECTPAGE CSS*/
 .link-container {
@@ -95,26 +131,6 @@ footer{
 /*END OF LANDINGPAGE CSS*/
 
 /*START OF SUMMARY PAGE*/
-.menu {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  background-color: yellow;
-}
-
-
-.menu li {
-  float: left;
-}
-
-.menu li a {
-  display: block;
-  color: red;
-  text-align: center;
-  padding: 14px 16px;
-}
-
 .summary, .summary th, .summary td{
   border: 1px solid
 }
