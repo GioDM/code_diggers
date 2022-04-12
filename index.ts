@@ -26,7 +26,12 @@ app.get('/legomasters/set', (req:any, res:any)=>{
 app.get('/legomasters/blacklist', (req:any, res:any)=>{
     res.render('legomasters/overzichtBlacklist.ejs', { title: 'LegoMasters | Blacklist' })
 })
-
+app.get('/legomasters/sort/sort', (req:any, res:any)=>{
+    res.render('legomasters/sort/ordenenMain.ejs', { title: 'LegoMasters | Sorting' })
+})
+app.get('/legomasters/sort/result', (req:any, res:any)=>{
+    res.render('legomasters/sort/resultaat.ejs', { title: 'LegoMasters | Sorting Result' })
+})
 app.get('/reference', (req: any, res: any) => {
     res.render('reference.ejs', { title: 'IT Project | References' })
 })
