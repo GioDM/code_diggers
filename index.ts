@@ -37,6 +37,10 @@ app.get('/legomasters/summary', (req: any, res: any) => {
     res.render('legomasters/summary.ejs', { title: 'LegoMasters | Summary' })
 })
 
+app.get('/legomasters/sort/start', (req: any, res: any) => {
+    res.render('legomasters/sort/beginordenen.ejs', { title: 'LegoMasters | Ordenen Start' })
+})
+
 app.use(function (req: any, res: any) {
     res.status(404).render('404.ejs');
 });
