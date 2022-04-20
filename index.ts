@@ -1,5 +1,9 @@
 const express = require('express');
 const ejs = require('ejs');
+//const axios = require('axios');
+import axios from "axios";
+import { config } from "process";
+
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -23,6 +27,7 @@ app.get('/legomasters/minifig', (req:any, res:any)=>{
 app.get('/legomasters/blacklist', (req:any, res:any)=>{
     res.render('legomasters/overzichtBlacklist.ejs', { title: 'LegoMasters | Blacklist' })
 })
+
 app.get('/legomasters/sort/sort', (req:any, res:any)=>{
     res.render('legomasters/sort/ordenenMain.ejs', { title: 'LegoMasters | Sorting' })
 })
