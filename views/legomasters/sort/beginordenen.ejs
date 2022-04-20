@@ -1,6 +1,6 @@
 <%- include("../../header.ejs") -%>
 
-<form>
+<form action="/legomasters/sort/sort" method="post">
     <label for="minifig">Hoeveel minifigs wil je ordenen?</label>
     <select name="minifig" id="minifig">
        <% for( let i = 1; i <= 15; i++ ) { %>
