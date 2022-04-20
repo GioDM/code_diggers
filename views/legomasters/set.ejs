@@ -1,13 +1,13 @@
 <%- include("../header.ejs") -%>
 <div>
-    <img src="" alt="imageSet" height="250px">
+    <img src="" alt="imageSet">
     <div>
         <div>
             Naam: Set
         </div>
     </div>
 </div>
-<table style ="width: 75%" id="setTable">
+<table id="setTable">
     <tr>
         <% for (let i = 0;i < 5;i++) { %>
             <th>Minifig <%= i+1 %></th>
@@ -15,7 +15,7 @@
     </tr>
     <tr>
         <% for (let i = 0;i < 5;i++) { %>
-            <td><a href="minifig.ejs"><img src="<% i %>"  id="imageMinifig" alt="imageMinifig" height="200px"></a></td>
+            <td><a href="minifig.ejs"><img src="<% i %>"  id="imageMinifig" alt="imageMinifig" ></a></td>
         <% } %>
     </tr>
 </table>
