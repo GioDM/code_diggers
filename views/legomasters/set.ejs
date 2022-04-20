@@ -9,13 +9,14 @@
 </div>
 <table style ="width: 75%" id="setTable">
     <tr>
-        <th>Minifig 1</th>
-        <th>Minifig 2</th>
+        <% for (let i = 0;i < 5;i++) { %>
+            <th>Minifig <%= i+1 %></th>
+        <% } %>
     </tr>
     <tr>
-        <td><img src="" alt="imageMinifig" height="200px"></td>
-        <td><img src="" alt="imageMinifig" height="200px"></td>
+        <% for (let i = 0;i < 5;i++) { %>
+            <td><img src="<% i %>" alt="imageMinifig" height="200px"></td>
+        <% } %>
     </tr>
 </table>
-
 <%- include("../footer.ejs") -%>
