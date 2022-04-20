@@ -1,24 +1,136 @@
-.menu {
-  list-style-type: none;
-  margin: 0;
+:root {
+  font-family: 'Montserrat', sans-serif;
+}
+
+* {
   padding: 0;
-  overflow: hidden;
-  background-color: yellow;
+  margin: 0;
+  color: white;
 }
 
-
-.menu li {
-  float: left;
+body {
+  background-image: url("https://media.ondernemersbelang.nl/wp-content/uploads/2021/06/lego.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: rgb( 50, 50, 50);
+  background-blend-mode: overlay;
 }
 
-.menu li a {
-  display: block;
-  color: red;
-  text-align: center;
-  padding: 14px 16px;
+p {
+  /*background-color: rgba(70, 70, 70, 70%);*/
+  /*text-shadow: 0.05rem 0.05rem black;*/
+}
+
+a {
   text-decoration: none;
 }
 
+footer{
+  position: absolute;
+  bottom: 0;
+  text-align: center;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: rgb(39, 45, 45);
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.gray-background {
+  background-image: none;
+  background-color: rgb(213, 219, 230);
+}
+
+/*START OF HEADER*/
+.menu{
+  display: flex;
+  align-items: center;
+  height: 3rem;
+  background-color: rgb(255, 210, 63);
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+
+.menu-wrapper{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-right: auto;
+  margin-left: auto;
+  width: 98%;
+}
+
+.menu-wrapper>nav>ul{
+  list-style-type: none;
+}
+
+.menu-wrapper>nav>ul>li{
+  float: left;
+}
+
+.menu-wrapper>nav>ul>li>a {
+  display: block;
+  color: rgb(187, 10, 33);
+  text-align: center;
+  padding: 1rem;
+  font-weight: 700;
+}
+/*END OF HEADER*/
+
+/*START OF PROJECTPAGE CSS*/
+.link-container {
+  height: 34rem;
+  width: 70rem;
+  margin: auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-gap: 2rem;
+}
+
+.link-img {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0);
+  background-image: url("https://cdn.pixabay.com/photo/2013/07/12/12/58/tv-test-pattern-146649__340.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-blend-mode: overlay;
+  transition: all 0.7s;
+}
+
+.link-img:hover {
+  color: white;
+  text-shadow: 0.2rem 0.2rem black;
+  background-color: rgb( 70, 70, 70);
+}
+
+#lego {
+  background-image: url("https://www.lego.com/cdn/cs/set/assets/blt65bb8b098c075262/71032.png?fit=bounds&format=png&width=528&height=528&dpr=1");
+}
+
+@media only screen and (max-width: 1000px) {
+  .link-container {
+    height: 52rem;
+    width: 46rem;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    grid-gap: 2rem;
+  }
+}
+/*END OF PROJECTPAGE CSS*/
+
+/*START OF LANDINGPAGE CSS*/
+
+/*END OF LANDINGPAGE CSS*/
+
+/*START OF SUMMARY PAGE*/
 .summary, .summary th, .summary td{
   border: 1px solid
 }
@@ -28,3 +140,4 @@
   height: 200px;
   padding: 5%;
 }
+/*END OF SUMMARY PAGE*/
