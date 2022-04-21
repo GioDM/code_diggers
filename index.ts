@@ -3,12 +3,27 @@ const ejs = require('ejs');
 const app = express();
 const axios = require('axios');
 
-let apiData:any;
-
-const getApi = async (api : string):Promise<void> => {
+const getApi = async (api : string):Promise<any> => {
     let result = await axios.get(`https://rebrickable.com/api/v3/lego/${api}/?key=6cd12548f2028a329b97cc9f1aa3899f`);
-    apiData = result.data;
-};
+    return result.data;
+}
+
+const makeArray = async (list : any, amount : number):Promise<any> => {
+    let minifigArray : any[][] = [[],[]];
+    let j = 0;
+    for (let i = 0; i < list.count; i++) {
+        let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${list.results[i].set_num}/sets/?key=6cd12548f2028a329b97cc9f1aa3899f`);
+        if (result.data.count > 1) {
+            minifigArray[0].push(list.results[i]);
+            minifigArray[1].push(result.data);
+        }
+        if (minifigArray[0].length == amount) {
+            break;
+        }
+    }
+    return minifigArray;
+}
+
 
 app.set('view engine', 'ejs');
 app.set('port', 3000);
@@ -33,15 +48,15 @@ app.get('/legomasters/blacklist', (req:any, res:any)=>{
     res.render('legomasters/overzichtBlacklist.ejs', { title: 'LegoMasters | Blacklist' })
 })
 app.post('/legomasters/sort/sort', (req:any, res:any)=>{
-    let aantalMinifig = req.body.minifig;
-    getApi("minifigs");
-    console.log(apiData);
-    res.render('legomasters/sort/ordenenMain.ejs', { 
-        title: 'LegoMasters | Sorting',
-        //aantal : aantalMinifig,
-        //pic: minifigCode
-        //number : minifigCode
-    })
+    let aantal = req.body.minifig;
+    getApi('minifigs').then(x => {  
+        makeArray(x, aantal).then(y => {
+            res.render('legomasters/sort/ordenenMain.ejs', { 
+                title: 'LegoMasters | Sorting Main',
+                minifigs : y 
+            })
+        });
+    });
 })
 app.get('/legomasters/sort/result', (req:any, res:any)=>{
     res.render('legomasters/sort/resultaat.ejs', { title: 'LegoMasters | Sorting Result' })
