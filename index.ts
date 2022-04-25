@@ -1,3 +1,5 @@
+import { Console } from "console";
+
 const express = require('express');
 const ejs = require('ejs');
 const app = express();
@@ -47,16 +49,30 @@ app.get('/legomasters/minifig', (req:any, res:any)=>{
 app.get('/legomasters/blacklist', (req:any, res:any)=>{
     res.render('legomasters/overzichtBlacklist.ejs', { title: 'LegoMasters | Blacklist' })
 })
-app.post('/legomasters/sort/sort', (req:any, res:any)=>{
+let page = 0;
+let minifigList : any;
+app.post('/legomasters/sort/start', (req:any, res:any)=>{
     let aantal = req.body.minifig;
     getApi('minifigs').then(x => {  
         makeArray(x, aantal).then(y => {
+            minifigList = y;
             res.render('legomasters/sort/ordenenMain.ejs', { 
                 title: 'LegoMasters | Sorting Main',
-                minifigs : y 
+                minifigs : y,
+                index : page
             })
+
         });
     });
+})
+app.post('/legomasters/sort/add', (req:any, res:any)=>{
+    console.log(req.body.choiceSet);
+    page++;
+    res.render('legomasters/sort/ordenenMain.ejs', { 
+        title: 'LegoMasters | Sorting Main',
+        minifigs : minifigList,
+        index : page
+    })
 })
 app.get('/legomasters/sort/result', (req:any, res:any)=>{
     res.render('legomasters/sort/resultaat.ejs', { title: 'LegoMasters | Sorting Result' })
@@ -69,7 +85,7 @@ app.get('/legomasters/summary', (req: any, res: any) => {
     res.render('legomasters/summary.ejs', { title: 'LegoMasters | Summary' })
 })
 
-app.get('/legomasters/sort/start', (req: any, res: any) => {
+app.get('/legomasters/sort/', (req: any, res: any) => {
     res.render('legomasters/sort/beginordenen.ejs', { title: 'LegoMasters | Ordenen Start' })
 })
 

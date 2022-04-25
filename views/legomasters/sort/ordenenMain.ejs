@@ -1,36 +1,27 @@
 <%- include("../../header.ejs") -%>
     <center>
-        <div>
-            <img alt="fotoMinifig"
-                src="https://www.seekpng.com/png/detail/89-896910_lego-minifigures-video-game-guy.png" height="200px" />
-            <p>Naam fig</p>
-            <div class="btn-group">
+            <img alt="fotoMinifig" src=<%=minifigs[0][index].set_img_url%> height="200px" />
+            <p><%=minifigs[0][index].name%></p>
+            <form action=""  method="post">
+                
                 <button id="btn-skip">Skip</button>
+            </form>
+            <form action="" method="post">
+                <label class="hidden-label"><%=minifigs[0][index].set_num%></label>
                 <button id="btn-blacklist">Blacklist</button>
-            </div>
-        </div>
-        <div>
-            <h3>Beschikbare Sets</h3>
-            <div>
-                <form action="" method="GET">
-                    <input type="radio" name="choiceSet" value="add"> Add
+            </form>
+            <form class="btn-group" action="/legomasters/sort/add" method="post">
+                <input id="btn-add" type="submit" value="add">
+                <h3>Beschikbare Sets</h3>
+                <div>
+                    <% for(let i = 0; i<minifigs[1][index].count; i++) { %>
+                    <input type="radio" name="choiceSet" value=<%=minifigs[1][index].results[i].set_num%>>
                     <div>
-                        <img alt="fotoSet" src="" height="200px" />
-                        <p>Naam set</p>
+                        <img alt="fotoSet" src=<%=minifigs[1][index].results[i].set_img_url%> height="200px" />
+                        <p><%=minifigs[1][index].results[i].name%></p>
                     </div><br>
-                    <input type="radio" name="choiceSet" value="add"> Add
-                    <div>
-                        <img alt="fotoSet" src="" height="200px" />
-                        <p>Naam set</p>
-                    </div><br>
-                    <input type="radio" name="choiceSet" value="add"> Add
-                    <div>
-                        <img alt="fotoSet" src="" height="200px" />
-                        <p>Naam set</p>
-                    </div><br>
-                </form>
-            </div>
-
-        </div>
+                    <% } %>
+                </div>
+            </form>
     </center>
-    <%- include("../../footer.ejs") -%>
+<%- include("../../footer.ejs") -%>
