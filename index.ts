@@ -61,8 +61,8 @@ app.post('/legomasters/sort/start', (req:any, res:any)=>{
     aantal = req.body.minifig;
     done = 0;
     skip = 0;
-    page = 0;
-    res.redirect(`/legomasters/sort/page/${page+1}`);
+    page = 1;
+    res.redirect(`/legomasters/sort/page/${page}`);
 })
 app.post('/legomasters/sort/add', (req:any, res:any)=>{
     console.log(req.body.choiceSet);
@@ -71,7 +71,7 @@ app.post('/legomasters/sort/add', (req:any, res:any)=>{
     page++;
     done++;
     if (page < aantal) {
-        res.redirect(`/legomasters/sort/page/${page+1}`);
+        res.redirect(`/legomasters/sort/page/${page}`);
     }
     else {
         res.redirect('/legomasters/sort/result');
@@ -83,7 +83,7 @@ app.post('/legomasters/sort/blacklist', (req:any, res:any)=>{
     twoSetMinifigList[1].shift();
     page++;
     if (page < aantal) {
-        res.redirect(`/legomasters/sort/page/${page+1}`);
+        res.redirect(`/legomasters/sort/page/${page}`);
     }
     else {
         res.redirect('/legomasters/sort/result');
@@ -95,7 +95,7 @@ app.post('/legomasters/sort/skip', (req:any, res:any)=>{
     page++;
     skip++;
     if (page < aantal) {
-        res.redirect(`/legomasters/sort/page/${page+1}`);
+        res.redirect(`/legomasters/sort/page/${page}`);
     }
     else {
         res.redirect('/legomasters/sort/result');
