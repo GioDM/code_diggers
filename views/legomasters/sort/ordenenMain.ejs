@@ -2,16 +2,17 @@
     <center>
             <img alt="fotoMinifig" src=<%=minifigs[0][index].set_img_url%> height="200px" />
             <p><%=minifigs[0][index].name%></p>
-            <form action=""  method="post">
-                
-                <button id="btn-skip">Skip</button>
+
+            <form action="/legomasters/sort/skip"  method="post">
+                <input id="btn-skip" type="submit" value="Skip">
             </form>
-            <form action="" method="post">
-                <label class="hidden-label"><%=minifigs[0][index].set_num%></label>
-                <button id="btn-blacklist">Blacklist</button>
+
+            <form action="/legomasters/sort/blacklist" method="post">
+                <input id="btn-blacklist" type="submit" value="Blacklist">
             </form>
+
             <form class="btn-group" action="/legomasters/sort/add" method="post">
-                <input id="btn-add" type="submit" value="add">
+                <input id="btn-add" type="submit" value="Add">
                 <h3>Beschikbare Sets</h3>
                 <div>
                     <% for(let i = 0; i<minifigs[1][index].count; i++) { %>

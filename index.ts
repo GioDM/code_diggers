@@ -51,6 +51,8 @@ app.get('/legomasters/blacklist', (req:any, res:any)=>{
 })
 let page = 0;
 let minifigList : any;
+let done = 0;
+let skip = 0;
 app.post('/legomasters/sort/start', (req:any, res:any)=>{
     let aantal = req.body.minifig;
     getApi('minifigs').then(x => {  
@@ -61,21 +63,58 @@ app.post('/legomasters/sort/start', (req:any, res:any)=>{
                 minifigs : y,
                 index : page
             })
-
         });
     });
 })
 app.post('/legomasters/sort/add', (req:any, res:any)=>{
     console.log(req.body.choiceSet);
+    done++;
     page++;
-    res.render('legomasters/sort/ordenenMain.ejs', { 
-        title: 'LegoMasters | Sorting Main',
-        minifigs : minifigList,
-        index : page
-    })
+    if (page < minifigList[0].length) {
+        res.render('legomasters/sort/ordenenMain.ejs', { 
+            title: 'LegoMasters | Sorting Main',
+            minifigs : minifigList,
+            index : page
+        })
+    }
+    else {
+        res.redirect('/legomasters/sort/result');
+    }
+})
+app.post('/legomasters/sort/blacklist', (req:any, res:any)=>{
+    console.log(minifigList[0][page].set_num);
+    page++;
+    if (page < minifigList[0].length) {
+        res.render('legomasters/sort/ordenenMain.ejs', { 
+            title: 'LegoMasters | Sorting Main',
+            minifigs : minifigList,
+            index : page
+        })
+    }
+    else {
+        res.redirect('/legomasters/sort/result');
+    }
+})
+app.post('/legomasters/sort/skip', (req:any, res:any)=>{
+    page++;
+    skip++;
+    if (page < minifigList[0].length) {
+        res.render('legomasters/sort/ordenenMain.ejs', { 
+            title: 'LegoMasters | Sorting Main',
+            minifigs : minifigList,
+            index : page
+        })
+    }
+    else {
+        res.redirect('/legomasters/sort/result');
+    }
 })
 app.get('/legomasters/sort/result', (req:any, res:any)=>{
-    res.render('legomasters/sort/resultaat.ejs', { title: 'LegoMasters | Sorting Result' })
+    res.render('legomasters/sort/resultaat.ejs', { 
+        title: 'LegoMasters | Sorting Result',
+        minifigsAdded : done,
+        minifigsSkipped : skip
+    })
 })
 app.get('/reference', (req: any, res: any) => {
     res.render('reference.ejs', { title: 'IT Project | References' })
