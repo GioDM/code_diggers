@@ -1,4 +1,4 @@
-import { Console } from "console";
+import { time } from "console";
 
 const express = require('express');
 const ejs = require('ejs');
@@ -10,22 +10,23 @@ const getApi = async (api : string):Promise<any> => {
     return result.data;
 }
 
-const makeArray = async (list : any, amount : number):Promise<any> => {
-    let minifigArray : any[][] = [[],[]];
-    let j = 0;
-    for (let i = 0; i < list.count; i++) {
+let twoSetMinifigList : any [][] = [[],[]];
+
+const makeArray = async (list : any):Promise<void> => {
+    for (let i = 0; i < list.results.length; i++) {
         let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${list.results[i].set_num}/sets/?key=6cd12548f2028a329b97cc9f1aa3899f`);
         if (result.data.count > 1) {
-            minifigArray[0].push(list.results[i]);
-            minifigArray[1].push(result.data);
+            twoSetMinifigList[0].push(list.results[i]);
+            twoSetMinifigList[1].push(result.data);
         }
-        if (minifigArray[0].length == amount) {
-            break;
-        }
+        await new Promise(f => setTimeout(f, 1000));
     }
-    return minifigArray;
 }
 
+
+getApi('minifigs').then(x => {
+    makeArray(x);
+});
 
 app.set('view engine', 'ejs');
 app.set('port', 3000);
@@ -49,67 +50,66 @@ app.get('/legomasters/minifig', (req:any, res:any)=>{
 app.get('/legomasters/blacklist', (req:any, res:any)=>{
     res.render('legomasters/overzichtBlacklist.ejs', { title: 'LegoMasters | Blacklist' })
 })
-let page = 0;
-let minifigList : any;
-let done = 0;
-let skip = 0;
+app.get('/legomasters/sort/', (req: any, res: any) => {
+    res.render('legomasters/sort/beginordenen.ejs', { title: 'LegoMasters | Ordenen Start' })
+})
+let page : number;
+let done : number;
+let skip : number;
+let aantal : number;
 app.post('/legomasters/sort/start', (req:any, res:any)=>{
-    let aantal = req.body.minifig;
-    getApi('minifigs').then(x => {  
-        makeArray(x, aantal).then(y => {
-            minifigList = y;
-            res.render('legomasters/sort/ordenenMain.ejs', { 
-                title: 'LegoMasters | Sorting Main',
-                minifigs : y,
-                index : page
-            })
-        });
-    });
+    aantal = req.body.minifig;
+    done = 0;
+    skip = 0;
+    page = 0;
+    res.redirect(`/legomasters/sort/page/${page+1}`);
 })
 app.post('/legomasters/sort/add', (req:any, res:any)=>{
     console.log(req.body.choiceSet);
-    done++;
+    twoSetMinifigList[0].shift();
+    twoSetMinifigList[1].shift();
     page++;
-    if (page < minifigList[0].length) {
-        res.render('legomasters/sort/ordenenMain.ejs', { 
-            title: 'LegoMasters | Sorting Main',
-            minifigs : minifigList,
-            index : page
-        })
+    done++;
+    if (page < aantal) {
+        res.redirect(`/legomasters/sort/page/${page+1}`);
     }
     else {
         res.redirect('/legomasters/sort/result');
     }
 })
 app.post('/legomasters/sort/blacklist', (req:any, res:any)=>{
-    console.log(minifigList[0][page].set_num);
+    console.log(twoSetMinifigList[0][0].set_num);
+    twoSetMinifigList[0].shift();
+    twoSetMinifigList[1].shift();
     page++;
-    if (page < minifigList[0].length) {
-        res.render('legomasters/sort/ordenenMain.ejs', { 
-            title: 'LegoMasters | Sorting Main',
-            minifigs : minifigList,
-            index : page
-        })
+    if (page < aantal) {
+        res.redirect(`/legomasters/sort/page/${page+1}`);
     }
     else {
         res.redirect('/legomasters/sort/result');
     }
 })
 app.post('/legomasters/sort/skip', (req:any, res:any)=>{
+    twoSetMinifigList[0].push(twoSetMinifigList[0].shift());
+    twoSetMinifigList[1].push(twoSetMinifigList[1].shift());
     page++;
     skip++;
-    if (page < minifigList[0].length) {
-        res.render('legomasters/sort/ordenenMain.ejs', { 
-            title: 'LegoMasters | Sorting Main',
-            minifigs : minifigList,
-            index : page
-        })
+    if (page < aantal) {
+        res.redirect(`/legomasters/sort/page/${page+1}`);
     }
     else {
         res.redirect('/legomasters/sort/result');
     }
 })
+app.get('/legomasters/sort/page/:page', (req:any, res:any)=>{
+    res.render('legomasters/sort/ordenenMain.ejs', { 
+        title: 'LegoMasters | Sorting Main',
+        minifigs : twoSetMinifigList,
+        //index : page
+    })
+})
 app.get('/legomasters/sort/result', (req:any, res:any)=>{
+    console.log(twoSetMinifigList[0][twoSetMinifigList[0].length-1]);
     res.render('legomasters/sort/resultaat.ejs', { 
         title: 'LegoMasters | Sorting Result',
         minifigsAdded : done,
@@ -122,10 +122,6 @@ app.get('/reference', (req: any, res: any) => {
 
 app.get('/legomasters/summary', (req: any, res: any) => {
     res.render('legomasters/summary.ejs', { title: 'LegoMasters | Summary' })
-})
-
-app.get('/legomasters/sort/', (req: any, res: any) => {
-    res.render('legomasters/sort/beginordenen.ejs', { title: 'LegoMasters | Ordenen Start' })
 })
 
 app.use(function (req: any, res: any) {
