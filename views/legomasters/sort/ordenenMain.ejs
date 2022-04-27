@@ -16,11 +16,11 @@
                 <h3>Beschikbare Sets</h3>
                 <div>
                     <% for(let i = 0; i<minifigs[1][0].count; i++) { %>
-                    <input type="radio" name="choiceSet" value=<%=minifigs[1][0].results[i].set_num%>>
-                    <div>
+                    <label>
+                        <input type="radio" name="choiceSet" value=<%=minifigs[1][0].results[i].set_num%>>
                         <img alt="fotoSet" src=<%=minifigs[1][0].results[i].set_img_url%> height="200px" />
                         <p><%=minifigs[1][0].results[i].name%></p>
-                    </div><br>
+                    </label>
                     <% } %>
                 </div>
             </form>

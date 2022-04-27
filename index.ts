@@ -65,12 +65,13 @@ app.post('/legomasters/sort/start', (req:any, res:any)=>{
     res.redirect(`/legomasters/sort/page/${page}`);
 })
 app.post('/legomasters/sort/add', (req:any, res:any)=>{
+    console.log(twoSetMinifigList[0][0].set_num);
     console.log(req.body.choiceSet);
     twoSetMinifigList[0].shift();
     twoSetMinifigList[1].shift();
     page++;
     done++;
-    if (page < aantal) {
+    if (page <= aantal) {
         res.redirect(`/legomasters/sort/page/${page}`);
     }
     else {
@@ -82,7 +83,7 @@ app.post('/legomasters/sort/blacklist', (req:any, res:any)=>{
     twoSetMinifigList[0].shift();
     twoSetMinifigList[1].shift();
     page++;
-    if (page < aantal) {
+    if (page <= aantal) {
         res.redirect(`/legomasters/sort/page/${page}`);
     }
     else {
@@ -94,7 +95,7 @@ app.post('/legomasters/sort/skip', (req:any, res:any)=>{
     twoSetMinifigList[1].push(twoSetMinifigList[1].shift());
     page++;
     skip++;
-    if (page < aantal) {
+    if (page <= aantal) {
         res.redirect(`/legomasters/sort/page/${page}`);
     }
     else {
@@ -105,11 +106,9 @@ app.get('/legomasters/sort/page/:page', (req:any, res:any)=>{
     res.render('legomasters/sort/ordenenMain.ejs', { 
         title: 'LegoMasters | Sorting Main',
         minifigs : twoSetMinifigList,
-        //index : page
     })
 })
 app.get('/legomasters/sort/result', (req:any, res:any)=>{
-    console.log(twoSetMinifigList[0][twoSetMinifigList[0].length-1]);
     res.render('legomasters/sort/resultaat.ejs', { 
         title: 'LegoMasters | Sorting Result',
         minifigsAdded : done,
