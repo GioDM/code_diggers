@@ -79,9 +79,14 @@ app.get('/legomasters/minifig', (req:any, res:any)=>{
 })
 
 
-app.get(`/legomasters/blacklist`, (req:any, res:any)=>{
-    let blacklist: any;
-    res.render('legomasters/overzichtBlacklist.ejs', { title: 'LegoMasters | Blacklist',})
+app.get(`/legomasters/blacklist`, async (req:any, res:any)=>{
+    //let blacklist: blacklistMinifig[]=[];
+    await client.connect();
+    let cursor =  client.db('IT-project').collection('code_diggers').find({type:"blacklist"});
+    let result = await cursor.toArray();
+    await client.close();
+
+    res.render('legomasters/overzichtBlacklist.ejs', { title: 'LegoMasters | Blacklist', result})
 })
 app.get('/legomasters/sort/', (req: any, res: any) => {
     res.render('legomasters/sort/beginordenen.ejs', { title: 'LegoMasters | Ordenen Start' })
@@ -130,7 +135,7 @@ app.post('/legomasters/sort/blacklist', async (req:any, res:any)=>{
     {
         urlImageMinifig:twoSetMinifigList[0][0].set_img_url,
         codeMinifig:twoSetMinifigList[0][0].set_num,
-        reason: "",
+        reason: "Minifig is te lelijk",
         type:"blacklist"
     }
     const result = await client.db('IT-project').collection('code_diggers').insertOne(addBlacklist);
