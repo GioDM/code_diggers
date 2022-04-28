@@ -17,7 +17,7 @@
                 <div>
                     <% for(let i = 0; i<minifigs[1][0].count; i++) { %>
                     <label>
-                        <input type="radio" name="choiceSet" value=<%=minifigs[1][0].results[i].set_num%>>
+                        <input type="radio" name="choiceSet" value="<%=minifigs[1][0].results[i].set_num%>&<%=minifigs[1][0].results[i].set_img_url%>">
                         <img alt="fotoSet" src=<%=minifigs[1][0].results[i].set_img_url%> height="200px" />
                         <p><%=minifigs[1][0].results[i].name%></p>
                     </label>

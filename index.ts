@@ -104,19 +104,18 @@ app.post('/legomasters/sort/start', (req:any, res:any)=>{
 app.post('/legomasters/sort/add', async (req:any, res:any)=>{
     
     await client.connect();
+    let splittedChoiceSet = req.body.choiceSet.split("&");
     let addNewMinifigAndSet: minifigAndSet =
     {
         urlImageMinifig: twoSetMinifigList[0][0].set_img_url,
         codeMinifig: twoSetMinifigList[0][0].set_num,
-        urlImageSet: twoSetMinifigList[1][0].set_img_url,
-        codeSet: req.body.choiceSet,
+        urlImageSet: splittedChoiceSet[1],
+        codeSet: splittedChoiceSet[0],
         type: 'summary'
     }
     const result = await client.db('IT-project').collection('code_diggers').insertOne(addNewMinifigAndSet);
     console.log(`New listing created with the following id: ${result.insertedId}`);
     await client.close();
-    //console.log(twoSetMinifigList[0][0].set_num);
-    //console.log(req.body.choiceSet);
     twoSetMinifigList[0].shift();
     twoSetMinifigList[1].shift();
     page++;
@@ -140,7 +139,6 @@ app.post('/legomasters/sort/blacklist', async (req:any, res:any)=>{
     const result = await client.db('IT-project').collection('code_diggers').insertOne(addBlacklist);
     console.log(`New listing created with the following id: ${result.insertedId}`);
     await client.close();
-    //console.log(twoSetMinifigList[0][0].set_num);
     twoSetMinifigList[0].shift();
     twoSetMinifigList[1].shift();
     page++;
