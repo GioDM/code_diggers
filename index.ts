@@ -1,3 +1,19 @@
+const {MongoClient} = require('mongodb');
+const uri = 'mongodb+srv://phuong:fABJVEkElNOG8qgc@cluster0.bkwrp.mongodb.net/IT-project?retryWrites=true&w=majority'
+const client = new MongoClient(uri, { useUnifiedTopology: true });
+let doSomeDBCalls = async () => {
+    try {
+        await client.connect();
+ 
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+doSomeDBCalls();
+
+
 const express = require('express');
 const ejs = require('ejs');
 const app = express();
