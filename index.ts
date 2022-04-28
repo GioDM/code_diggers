@@ -2,6 +2,7 @@ import { time } from "console";
 
 const express = require('express');
 const ejs = require('ejs');
+
 const app = express();
 const axios = require('axios');
 
@@ -36,7 +37,7 @@ app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended:true}))
 
 app.get('/',(req:any, res:any)=>{
-    res.render('projects.ejs', { title: 'IT Project | Projecten' })
+    res.render('projects.ejs', { title: 'IT P:ct | Projecten' })
 })
 
 app.get('/legomasters/', (req:any, res:any)=>{
@@ -50,8 +51,9 @@ app.get('/legomasters/set', (req:any, res:any)=>{
     res.render('legomasters/set.ejs', { title: 'LegoMasters | Set' })
 })
 
-app.get('/legomasters/blacklist', (req:any, res:any)=>{
-    res.render('legomasters/overzichtBlacklist.ejs', { title: 'LegoMasters | Blacklist' })
+app.get(`/legomasters/blacklist`, (req:any, res:any)=>{
+    let blacklist: any;
+    res.render('legomasters/overzichtBlacklist.ejs', { title: 'LegoMasters | Blacklist',})
 })
 app.get('/legomasters/sort/', (req: any, res: any) => {
     res.render('legomasters/sort/beginordenen.ejs', { title: 'LegoMasters | Ordenen Start' })
