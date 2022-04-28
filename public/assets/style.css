@@ -5,14 +5,14 @@
 * {
   padding: 0;
   margin: 0;
-  color: white;
 }
 
 body {
-  background-image: url("https://media.ondernemersbelang.nl/wp-content/uploads/2021/06/lego.jpg");
+  height: auto;
+  padding-top: 4rem;
+  padding-bottom: 3rem;
+  background: url("https://media.ondernemersbelang.nl/wp-content/uploads/2021/06/lego.jpg") no-repeat center center fixed;
   background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
   background-color: rgb( 50, 50, 50);
   background-blend-mode: overlay;
 }
@@ -20,14 +20,24 @@ body {
 p {
   /*background-color: rgba(70, 70, 70, 70%);*/
   /*text-shadow: 0.05rem 0.05rem black;*/
+  color: white;
 }
 
 a {
   text-decoration: none;
+  color: white;
+}
+
+label {
+  color: white;
+}
+
+h3, h2, h1 {
+  color: white;
 }
 
 footer{
-  position: absolute;
+  position: fixed;
   bottom: 0;
   text-align: center;
   width: 100%;
@@ -45,6 +55,9 @@ footer{
 
 /*START OF HEADER*/
 .menu{
+  position: fixed;
+  top:0;
+  width: 100%;
   display: flex;
   align-items: center;
   height: 3rem;
@@ -141,3 +154,20 @@ footer{
   padding: 5%;
 }
 /*END OF SUMMARY PAGE*/
+
+/* ORDEN PAGINA */
+input[name=choiceSet] { 
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+input[name=choiceSet] + img {
+  cursor: pointer;
+}
+
+input[name=choiceSet]:checked + img {
+  outline: 2px solid #f00;
+}
+/* ORDEN PAGINA */
