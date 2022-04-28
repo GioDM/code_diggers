@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/public/assets/style.css">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -8,11 +11,15 @@
     <title><%= title %></title>
 </head>
 <header class="menu">
-    <img alt="Legomasters logo" src="https://www.nineforbrands.com.au/wp-content/uploads/2021/01/LEMA_3D_Logotype.png" height="75px">
-    <ul>
-        <li><a href="/">Ordenen minifigures</a></li>
-        <li><a href="/">Overzicht minifigures</a></li>
-        <li><a href="/">Terug naar projecten</a></li>
-    </ul>
+    <div class="menu-wrapper">
+        <a href="/legomasters"><img alt="Legomasters logo" src="https://www.nineforbrands.com.au/wp-content/uploads/2021/01/LEMA_3D_Logotype.png" height="75px"></a>
+        <nav>
+            <ul>
+                <li><a href="/legomasters/sort/start">Ordenen minifigures</a></li>
+                <li><a href="/legomasters/summary">Overzicht minifigures</a></li>
+                <li><a href="/">Terug naar projecten</a></li>
+            </ul>
+        </nav>
+    </div>
 </header>
 <body>
