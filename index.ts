@@ -1,8 +1,5 @@
 const express = require('express');
 const ejs = require('ejs');
-//const axios = require('axios');
-import axios from "axios";
-import { config } from "process";
 
 const app = express();
 
@@ -13,7 +10,7 @@ app.set('port', 3000);
 app.use('/public', express.static('public'));
 
 app.get('/',(req:any, res:any)=>{
-    res.render('projects.ejs', { title: 'IT Project | Projecten' })
+    res.render('projects.ejs', { title: 'IT P:ct | Projecten' })
 })
 
 app.get('/legomasters/', (req:any, res:any)=>{
@@ -24,8 +21,9 @@ app.get('/legomasters/minifig', (req:any, res:any)=>{
     res.render('legomasters/minifig.ejs', { title: 'LegoMasters | Minifigs' })
 })
 
-app.get('/legomasters/blacklist', (req:any, res:any)=>{
-    res.render('legomasters/overzichtBlacklist.ejs', { title: 'LegoMasters | Blacklist' })
+app.get(`/legomasters/blacklist`, (req:any, res:any)=>{
+    let blacklist: any;
+    res.render('legomasters/overzichtBlacklist.ejs', { title: 'LegoMasters | Blacklist',})
 })
 
 app.get('/legomasters/sort/sort', (req:any, res:any)=>{
