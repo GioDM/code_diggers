@@ -80,7 +80,6 @@ app.get('/legomasters/minifig', (req:any, res:any)=>{
 
 
 app.get(`/legomasters/blacklist`, async (req:any, res:any)=>{
-    //let blacklist: blacklistMinifig[]=[];
     await client.connect();
     let cursor =  client.db('IT-project').collection('code_diggers').find({type:"blacklist"});
     let result = await cursor.toArray();
@@ -109,7 +108,7 @@ app.post('/legomasters/sort/add', async (req:any, res:any)=>{
     {
         urlImageMinifig: twoSetMinifigList[0][0].set_img_url,
         codeMinifig: twoSetMinifigList[0][0].set_num,
-        urlImageSet: req.body.fotoSet,
+        urlImageSet: twoSetMinifigList[1][0].set_img_url,
         codeSet: req.body.choiceSet,
         type: 'summary'
     }
@@ -181,8 +180,12 @@ app.get('/reference', (req: any, res: any) => {
     res.render('reference.ejs', { title: 'IT Project | References' })
 })
 
-app.get('/legomasters/summary', (req: any, res: any) => {
-    res.render('legomasters/summary.ejs', { title: 'LegoMasters | Summary' })
+app.get('/legomasters/summary', async (req: any, res: any) => {
+    await client.connect();
+    let cursor =  client.db('IT-project').collection('code_diggers').find({type:"summary"});
+    let result = await cursor.toArray();
+    await client.close();
+    res.render('legomasters/summary.ejs', { title: 'LegoMasters | Summary', result })
 })
 
 app.use(function (req: any, res: any) {
