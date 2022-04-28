@@ -77,6 +77,9 @@ app.get('/legomasters/', (req:any, res:any)=>{
 app.get('/legomasters/minifig', (req:any, res:any)=>{
     res.render('legomasters/minifig.ejs', { title: 'LegoMasters | Minifigs' })
 })
+app.get('/legomasters/set', (req:any, res:any)=>{
+    res.render('legomasters/set.ejs', { title: 'LegoMasters | Set' })
+})
 
 
 app.get(`/legomasters/blacklist`, async (req:any, res:any)=>{
