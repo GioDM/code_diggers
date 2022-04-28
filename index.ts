@@ -1,7 +1,7 @@
 const {MongoClient} = require('mongodb');
 const uri = 'mongodb+srv://phuong:fABJVEkElNOG8qgc@cluster0.bkwrp.mongodb.net/IT-project?retryWrites=true&w=majority'
 const client = new MongoClient(uri, { useUnifiedTopology: true });
-let doSomeDBCalls = async () => {
+/*let doSomeDBCalls = async () => {
     try {
         await client.connect();
  
@@ -11,8 +11,22 @@ let doSomeDBCalls = async () => {
         await client.close();
     }
 }
-doSomeDBCalls();
-
+doSomeDBCalls();*/
+interface minifigAndSet
+{
+    urlImageMinifig:string;
+    codeMinifig:string;
+    urlImageSet:String;
+    codeSet:string;
+    type:string; //overzicht
+}
+interface blacklisteMinifig
+{
+    urlImageMinifig:string;
+    codeMinifig:string;
+    reason: string;
+    type:string; //blacklist
+}
 
 const express = require('express');
 const ejs = require('ejs');
