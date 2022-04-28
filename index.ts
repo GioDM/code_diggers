@@ -1,4 +1,34 @@
 import { time } from "console";
+const {MongoClient} = require('mongodb');
+const uri = 'mongodb+srv://phuong:fABJVEkElNOG8qgc@cluster0.bkwrp.mongodb.net/IT-project?retryWrites=true&w=majority'
+const client = new MongoClient(uri, { useUnifiedTopology: true });
+/*let doSomeDBCalls = async () => {
+    try {
+        await client.connect();
+        await client.db('IT-project').collection('code_diggers').deleteMany({});
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+doSomeDBCalls();*/
+
+interface minifigAndSet
+{
+    urlImageMinifig:string;
+    codeMinifig:string;
+    urlImageSet:string;
+    codeSet:string;
+    type:string; //summary
+}
+interface blacklistMinifig
+{
+    urlImageMinifig:string;
+    codeMinifig:string;
+    reason: string;
+    type:string; //blacklist
+}
 
 const express = require('express');
 const ejs = require('ejs');
@@ -48,6 +78,7 @@ app.get('/legomasters/minifig', (req:any, res:any)=>{
 })
 
 app.get('/legomasters/blacklist', (req:any, res:any)=>{
+
     res.render('legomasters/overzichtBlacklist.ejs', { title: 'LegoMasters | Blacklist' })
 })
 app.get('/legomasters/sort/', (req: any, res: any) => {
@@ -64,9 +95,22 @@ app.post('/legomasters/sort/start', (req:any, res:any)=>{
     page = 1;
     res.redirect(`/legomasters/sort/page/${page}`);
 })
-app.post('/legomasters/sort/add', (req:any, res:any)=>{
-    console.log(twoSetMinifigList[0][0].set_num);
-    console.log(req.body.choiceSet);
+app.post('/legomasters/sort/add', async (req:any, res:any)=>{
+    
+    await client.connect();
+    let addNewMinifigAndSet: minifigAndSet =
+    {
+        urlImageMinifig: twoSetMinifigList[0][0].set_img_url,
+        codeMinifig: twoSetMinifigList[0][0].set_num,
+        urlImageSet: req.body.fotoSet,
+        codeSet: req.body.choiceSet,
+        type: 'summary'
+    }
+    const result = await client.db('IT-project').collection('code_diggers').insertOne(addNewMinifigAndSet);
+    console.log(`New listing created with the following id: ${result.insertedId}`);
+    await client.close();
+    //console.log(twoSetMinifigList[0][0].set_num);
+    //console.log(req.body.choiceSet);
     twoSetMinifigList[0].shift();
     twoSetMinifigList[1].shift();
     page++;
@@ -78,8 +122,19 @@ app.post('/legomasters/sort/add', (req:any, res:any)=>{
         res.redirect('/legomasters/sort/result');
     }
 })
-app.post('/legomasters/sort/blacklist', (req:any, res:any)=>{
-    console.log(twoSetMinifigList[0][0].set_num);
+app.post('/legomasters/sort/blacklist', async (req:any, res:any)=>{
+    await client.connect();
+    let addBlacklist: blacklistMinifig =
+    {
+        urlImageMinifig:twoSetMinifigList[0][0].set_img_url,
+        codeMinifig:twoSetMinifigList[0][0].set_num,
+        reason: "",
+        type:"blacklist"
+    }
+    const result = await client.db('IT-project').collection('code_diggers').insertOne(addBlacklist);
+    console.log(`New listing created with the following id: ${result.insertedId}`);
+    await client.close();
+    //console.log(twoSetMinifigList[0][0].set_num);
     twoSetMinifigList[0].shift();
     twoSetMinifigList[1].shift();
     page++;
