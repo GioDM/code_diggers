@@ -1,35 +1,6 @@
-const {MongoClient} = require('mongodb');
-const uri = 'mongodb+srv://phuong:fABJVEkElNOG8qgc@cluster0.bkwrp.mongodb.net/IT-project?retryWrites=true&w=majority'
-const client = new MongoClient(uri, { useUnifiedTopology: true });
-/*let doSomeDBCalls = async () => {
-    try {
-        await client.connect();
- 
-    } catch (e) {
-        console.error(e);
-    } finally {
-        await client.close();
-    }
-}
-doSomeDBCalls();*/
-interface minifigAndSet
-{
-    urlImageMinifig:string;
-    codeMinifig:string;
-    urlImageSet:String;
-    codeSet:string;
-    type:string; //overzicht
-}
-interface blacklisteMinifig
-{
-    urlImageMinifig:string;
-    codeMinifig:string;
-    reason: string;
-    type:string; //blacklist
-}
-
 const express = require('express');
 const ejs = require('ejs');
+
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -39,7 +10,7 @@ app.set('port', 3000);
 app.use('/public', express.static('public'));
 
 app.get('/',(req:any, res:any)=>{
-    res.render('projects.ejs', { title: 'IT Project | Projecten' })
+    res.render('projects.ejs', { title: 'IT P:ct | Projecten' })
 })
 
 app.get('/legomasters/', (req:any, res:any)=>{
@@ -50,9 +21,11 @@ app.get('/legomasters/minifig', (req:any, res:any)=>{
     res.render('legomasters/minifig.ejs', { title: 'LegoMasters | Minifigs' })
 })
 
-app.get('/legomasters/blacklist', (req:any, res:any)=>{
-    res.render('legomasters/overzichtBlacklist.ejs', { title: 'LegoMasters | Blacklist' })
+app.get(`/legomasters/blacklist`, (req:any, res:any)=>{
+    let blacklist: any;
+    res.render('legomasters/overzichtBlacklist.ejs', { title: 'LegoMasters | Blacklist',})
 })
+
 app.get('/legomasters/sort/sort', (req:any, res:any)=>{
     res.render('legomasters/sort/ordenenMain.ejs', { title: 'LegoMasters | Sorting' })
 })
