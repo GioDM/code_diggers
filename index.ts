@@ -30,14 +30,14 @@ getApi('minifigs').then(x => {
 });
 
 app.set('view engine', 'ejs');
-app.set('port', 3000);
+app.set('port', (process.env.PORT || 3000));
 
 app.use('/public', express.static('public'));
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended:true}))
 
 app.get('/',(req:any, res:any)=>{
-    res.render('projects.ejs', { title: 'IT P:ct | Projecten' })
+    res.render('projects.ejs', { title: 'IT Project| Projecten' })
 })
 
 app.get('/legomasters/', (req:any, res:any)=>{
