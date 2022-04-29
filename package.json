@@ -8,6 +8,7 @@
     "ejs": "^3.1.6",
     "events": "^3.3.0",
     "express": "^4.17.3",
+    "nodemon": "^2.0.16",
     "ts-node": "^10.7.0",
     "typescript": "^4.6.4"
   },
@@ -15,8 +16,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "ts-node index.ts"
+    "start": "node dist/index.js",
+    "build": "tsc",
+    "dev": "nodemon --exec ts-node ./src/index.ts --mode development"
   },
   "repository": {
     "type": "git",
