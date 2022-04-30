@@ -1,4 +1,4 @@
-import { time } from "console";
+import { Console, time } from "console";
 const {MongoClient} = require('mongodb');
 const uri = 'mongodb+srv://phuong:fABJVEkElNOG8qgc@cluster0.bkwrp.mongodb.net/IT-project?retryWrites=true&w=majority'
 const client = new MongoClient(uri, { useUnifiedTopology: true });
@@ -77,12 +77,12 @@ app.get('/legomasters/', (req:any, res:any)=>{
 app.get('/legomasters/minifig', (req:any, res:any)=>{
     res.render('legomasters/minifig.ejs', { title: 'LegoMasters | Minifigs' })
 })
-app.get('/legomasters/set', async (req:any, res:any)=>{
+app.get('/legomasters/set/:setCode', async (req:any, res:any)=>{
     await client.connect();
-    let cursor =  client.db('IT-project').collection('code_diggers').find({codeSet:""});
+    let cursor =  client.db('IT-project').collection('code_diggers').find({codeSet:req.params.setCode});
     let result = await cursor.toArray();
     await client.close();
-    res.render('legomasters/set.ejs', { title: 'LegoMasters | Set' })
+    res.render('legomasters/set.ejs', { title: 'LegoMasters | Set', result })
 })
 
 

@@ -1,21 +1,21 @@
 <%- include("../header.ejs") -%>
 <div>
-    <img src="" alt="imageSet">
+    <img src="<%=result[0].urlImageSet%>" alt="imageSet">
     <div>
         <div>
-            Naam: Set
+            Code Set: <%=result[0].codeSet%>
         </div>
     </div>
 </div>
 <table id="setTable">
     <tr>
-        <% for (let i = 0;i < 5;i++) { %>
-            <th>Minifig <%= i+1 %></th>
+        <% for (let i = 0; i < result.length; i++) { %>
+            <th><%=result[i].codeMinifig%></th>
         <% } %>
     </tr>
     <tr>
-        <% for (let i = 0;i < 5;i++) { %>
-            <td><a href="minifig.ejs"><img src="<% i %>"  id="imageMinifig" alt="imageMinifig" ></a></td>
+        <% for (let i = 0; i < result.length; i++) { %>
+            <td><a href="minifig.ejs"><img src="<%=result[i].urlImageMinifig%>"  id="imageMinifig" alt="imageMinifig" ></a></td>
         <% } %>
     </tr>
 </table>
