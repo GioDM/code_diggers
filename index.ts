@@ -74,8 +74,10 @@ app.get('/legomasters/', (req:any, res:any)=>{
     res.render('legomasters/landing.ejs', { title: 'LegoMasters | Homescreen' })
 })
 
-app.get('/legomasters/minifig', (req:any, res:any)=>{
-    res.render('legomasters/minifig.ejs', { title: 'LegoMasters | Minifigs' })
+app.get('/legomasters/minifig/:minifigCode', async (req:any, res:any)=>{
+    let result= await client.db('IT-project').collection('code_diggers').findOne({codeMinifig:req.params.minifigCode});
+    await client.close();
+    res.render('legomasters/minifig.ejs', { title: 'LegoMasters | Minifigs', result })
 })
 app.get('/legomasters/set/:setCode', async (req:any, res:any)=>{
     await client.connect();
@@ -84,8 +86,6 @@ app.get('/legomasters/set/:setCode', async (req:any, res:any)=>{
     await client.close();
     res.render('legomasters/set.ejs', { title: 'LegoMasters | Set', result })
 })
-
-
 app.get(`/legomasters/blacklist`, async (req:any, res:any)=>{
     await client.connect();
     let cursor =  client.db('IT-project').collection('code_diggers').find({type:"blacklist"});
