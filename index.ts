@@ -18,6 +18,7 @@ interface minifigAndSet
 {
     urlImageMinifig:string;
     codeMinifig:string;
+    name:string;
     urlImageSet:string;
     codeSet:string;
     type:string; //summary
@@ -26,6 +27,7 @@ interface blacklistMinifig
 {
     urlImageMinifig:string;
     codeMinifig:string;
+    name:string;
     reason: string;
     type:string; //blacklist
 }
@@ -53,12 +55,29 @@ const makeArray = async (list : any):Promise<void> => {
         await new Promise(f => setTimeout(f, 1000));
     }
 }
-
-
+let arraySortedMinifigs : any[] = [];
+const createArraySortedMinifigs = async():Promise<void> =>
+{
+    await client.connect();
+    let cursor =  client.db('IT-project').collection('code_diggers').find({});
+    arraySortedMinifigs = await cursor.toArray();
+    await client.close();
+}
+createArraySortedMinifigs();
+/*const checkMinifig = ():void =>
+{
+    for (let i = 0;i < arraySortedMinifigs.length;i++)
+    {
+        if (twoSetMinifigList[0].indexOf({set_num :arraySortedMinifigs[i].codeMinifig.codeMinifig}) > -1)
+        {
+            twoSetMinifigList[0].splice(twoSetMinifigList[0].indexOf({set_num :arraySortedMinifigs[i].codeMinifig.codeMinifig}), 1);
+            twoSetMinifigList[1].splice(twoSetMinifigList[0].indexOf({set_num :arraySortedMinifigs[i].codeMinifig.codeMinifig}), 1);
+        }
+    } 
+}*/
 getApi('minifigs').then(x => {
     makeArray(x);
 });
-
 app.set('view engine', 'ejs');
 app.set('port', 3000);
 
@@ -116,6 +135,7 @@ app.post('/legomasters/sort/add', async (req:any, res:any)=>{
     {
         urlImageMinifig: twoSetMinifigList[0][0].set_img_url,
         codeMinifig: twoSetMinifigList[0][0].set_num,
+        name:twoSetMinifigList[0][0].name,
         urlImageSet: splittedChoiceSet[1],
         codeSet: splittedChoiceSet[0],
         type: 'summary'
@@ -140,6 +160,7 @@ app.post('/legomasters/sort/blacklist', async (req:any, res:any)=>{
     {
         urlImageMinifig:twoSetMinifigList[0][0].set_img_url,
         codeMinifig:twoSetMinifigList[0][0].set_num,
+        name:twoSetMinifigList[0][0].name,
         reason: "Minifig is te lelijk",
         type:"blacklist"
     }
