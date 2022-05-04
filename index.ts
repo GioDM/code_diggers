@@ -1,4 +1,5 @@
 import { time } from "console";
+require('dotenv').config();
 
 const express = require('express');
 const ejs = require('ejs');
@@ -7,7 +8,7 @@ const app = express();
 const axios = require('axios');
 
 const getApi = async (api : string):Promise<any> => {
-    let result = await axios.get(`https://rebrickable.com/api/v3/lego/${api}/?key=6cd12548f2028a329b97cc9f1aa3899f`);
+    let result = await axios.get(`https://rebrickable.com/api/v3/lego/${api}/?key=${process.env.API_KEY}`);
     return result.data;
 }
 
@@ -15,7 +16,7 @@ let twoSetMinifigList : any [][] = [[],[]];
 
 const makeArray = async (list : any):Promise<void> => {
     for (let i = 0; i < list.results.length; i++) {
-        let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${list.results[i].set_num}/sets/?key=6cd12548f2028a329b97cc9f1aa3899f`);
+        let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${list.results[i].set_num}/sets/?key=${process.env.API_KEY}`);
         if (result.data.count > 1) {
             twoSetMinifigList[0].push(list.results[i]);
             twoSetMinifigList[1].push(result.data);
