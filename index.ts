@@ -14,6 +14,7 @@ let twoSetMinifigList : any [][] = [[],[]];
 let minifigIndex : number;
 let sortingIndex : number = 0;
 let skippedMinifigs : any[];
+let arrayParts : any[] = [];
 let page : number;
 let done : number;
 let skip : number;
@@ -40,7 +41,15 @@ const makeArray = async (list : any):Promise<void> => {
         await new Promise(f => setTimeout(f, 1000));
     }
 }
-
+const getArrayParts = async(x:any):Promise<void> =>
+{
+    let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${x.set_num}/parts/?key=6cd12548f2028a329b97cc9f1aa3899f`);
+    let tempArray = result.data.results;
+    for (let i = 0;i < tempArray.length;i++)
+    {
+        arrayParts.push(tempArray[i].part);
+    }
+}
 const putInDb = async (collection : string, object : any):Promise<void> => {
     await client.connect();
     let result = await client.db('IT-project').collection(collection).insertOne(object);
@@ -190,14 +199,17 @@ app.get('/legomasters/sort/result', async (req:any, res:any)=>{
 
 
 app.get('/legomasters/minifig/:minifigCode', async (req:any, res:any)=>{
+    await client.connect();
     let result= await client.db('IT-project').collection('MinifigAndSet').findOne({set_num:req.params.minifigCode});
+    await getArrayParts(result);
     await client.close();
-    res.render('legomasters/minifig.ejs', { title: 'LegoMasters | Minifigs', result })
+    res.render('legomasters/minifig.ejs', { title: 'LegoMasters | Minifigs', result,arrayParts })
+    arrayParts = [];
 })
 
 app.get('/legomasters/set/:setCode', async (req:any, res:any)=>{
     await client.connect();
-    let cursor =  client.db('IT-project').collection('MinifigAndSet').find({selected_set_num:req.params.setCode});
+    let cursor =  client.db('IT-project').collection('MinifigAndSet').find({selected_num:req.params.setCode});
     let result = await cursor.toArray();
     await client.close();
     res.render('legomasters/set.ejs', { title: 'LegoMasters | Set', result })
