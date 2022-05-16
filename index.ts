@@ -200,7 +200,11 @@ app.get('/legomasters/sort/result', async (req:any, res:any)=>{
 
 app.get('/legomasters/minifig/:minifigCode', async (req:any, res:any)=>{
     await client.connect();
-    let result= await client.db('IT-project').collection('MinifigAndSet').findOne({set_num:req.params.minifigCode});
+    let result = await client.db('IT-project').collection('MinifigAndSet').findOne({set_num:req.params.minifigCode});
+    if (result == null)
+    {
+        result = await client.db('IT-project').collection('Blacklist').findOne({set_num:req.params.minifigCode});
+    }
     await getArrayParts(result);
     await client.close();
     res.render('legomasters/minifig.ejs', { title: 'LegoMasters | Minifigs', result,arrayParts })
