@@ -170,4 +170,8 @@ input[name=choiceSet] + img {
 input[name=choiceSet]:checked + img {
   outline: 2px solid #f00;
 }
+
+input[name=choiceSet]:checked + #btn-add {
+  color: red;
+}
 /* ORDEN PAGINA */

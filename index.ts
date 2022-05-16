@@ -1,52 +1,31 @@
 import { Console, time } from "console";
+import { checkPrime } from "crypto";
 const {MongoClient} = require('mongodb');
 const uri = 'mongodb+srv://phuong:fABJVEkElNOG8qgc@cluster0.bkwrp.mongodb.net/IT-project?retryWrites=true&w=majority'
 const client = new MongoClient(uri, { useUnifiedTopology: true });
-/*let doSomeDBCalls = async () => {
-    try {
-        await client.connect();
-        await client.db('IT-project').collection('code_diggers').deleteMany({});
-    } catch (e) {
-        console.error(e);
-    } finally {
-        await client.close();
-    }
-}
-doSomeDBCalls();*/
-
-interface minifigAndSet
-{
-    urlImageMinifig:string;
-    codeMinifig:string;
-    name:string;
-    urlImageSet:string;
-    codeSet:string;
-    type:string; //summary
-}
-interface blacklistMinifig
-{
-    urlImageMinifig:string;
-    codeMinifig:string;
-    name:string;
-    reason: string;
-    type:string; //blacklist
-}
 
 const express = require('express');
 const ejs = require('ejs');
-
 const app = express();
+
 const axios = require('axios');
+
+let twoSetMinifigList : any [][] = [[],[]];
+let minifigIndex : number;
+let sortingIndex : number = 0;
+let skippedMinifigs : any[];
+let page : number;
+let done : number;
+let skip : number;
+let aantal : number;
 
 const getApi = async (api : string):Promise<any> => {
     let result = await axios.get(`https://rebrickable.com/api/v3/lego/${api}/?key=6cd12548f2028a329b97cc9f1aa3899f`);
     return result.data;
 }
 
-let twoSetMinifigList : any [][] = [[],[]];
-
 const makeArray = async (list : any):Promise<void> => {
-    for (let i = 0; i < list.results.length; i++) {
+    for (let i = minifigIndex; i < list.results.length; i++) {
         let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${list.results[i].set_num}/sets/?key=6cd12548f2028a329b97cc9f1aa3899f`);
         if (result.data.count > 1) {
             twoSetMinifigList[0].push(list.results[i]);
@@ -54,30 +33,62 @@ const makeArray = async (list : any):Promise<void> => {
         }
         await new Promise(f => setTimeout(f, 1000));
     }
+    for (let j = 0; j < skippedMinifigs.length; j++) {
+        let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${skippedMinifigs[j].set_num}/sets/?key=6cd12548f2028a329b97cc9f1aa3899f`);
+        twoSetMinifigList[0].push(skippedMinifigs[j]);
+        twoSetMinifigList[1].push(result.data);
+        await new Promise(f => setTimeout(f, 1000));
+    }
 }
-let arraySortedMinifigs : any[] = [];
-const createArraySortedMinifigs = async():Promise<void> =>
+
+const putInDb = async (collection : string, object : any):Promise<void> => {
+    await client.connect();
+    let result = await client.db('IT-project').collection(collection).insertOne(object);
+    /*if (aantal < page) {
+        await client.close();
+    }*/
+}
+
+const getIndex = async():Promise<void> =>
 {
     await client.connect();
-    let cursor =  client.db('IT-project').collection('code_diggers').find({});
-    arraySortedMinifigs = await cursor.toArray();
+    let result = await client.db('IT-project').collection('Session').findOne({name: 'minifigIndex'});
+    minifigIndex = result.index;
     await client.close();
 }
-createArraySortedMinifigs();
-/*const checkMinifig = ():void =>
+
+const sendIndex = async(minifig : any):Promise<void> =>
 {
-    for (let i = 0;i < arraySortedMinifigs.length;i++)
-    {
-        if (twoSetMinifigList[0].indexOf({set_num :arraySortedMinifigs[i].codeMinifig.codeMinifig}) > -1)
-        {
-            twoSetMinifigList[0].splice(twoSetMinifigList[0].indexOf({set_num :arraySortedMinifigs[i].codeMinifig.codeMinifig}), 1);
-            twoSetMinifigList[1].splice(twoSetMinifigList[0].indexOf({set_num :arraySortedMinifigs[i].codeMinifig.codeMinifig}), 1);
-        }
-    } 
-}*/
-getApi('minifigs').then(x => {
-    makeArray(x);
-});
+    await client.connect();
+    let newIndex : number = parseInt(minifig.set_num.substr(4,6));
+    let result = await client.db('IT-project').collection('Session').updateOne({name: 'minifigIndex'}, {$set:{index: newIndex}});
+}
+
+const getSkippedArray = async():Promise<void> =>
+{
+    await client.connect();
+    let cursor = client.db('IT-project').collection('Skipped').find({});
+    skippedMinifigs = await cursor.toArray();
+    await client.close();
+}
+
+const delSkipped = async(toDelete : any):Promise<void> =>
+{
+    await client.connect();
+    client.db('IT-project').collection('Skipped').deleteOne({set_num: toDelete});
+    await client.close();
+}
+
+
+( async() => {
+    await getIndex();
+    await getSkippedArray();
+    await getApi('minifigs').then(x => {
+        makeArray(x);
+    });
+})()
+
+
 app.set('view engine', 'ejs');
 app.set('port', 3000);
 
@@ -93,33 +104,11 @@ app.get('/legomasters/', (req:any, res:any)=>{
     res.render('legomasters/landing.ejs', { title: 'LegoMasters | Homescreen' })
 })
 
-app.get('/legomasters/minifig/:minifigCode', async (req:any, res:any)=>{
-    let result= await client.db('IT-project').collection('code_diggers').findOne({codeMinifig:req.params.minifigCode});
-    await client.close();
-    res.render('legomasters/minifig.ejs', { title: 'LegoMasters | Minifigs', result })
-})
-app.get('/legomasters/set/:setCode', async (req:any, res:any)=>{
-    await client.connect();
-    let cursor =  client.db('IT-project').collection('code_diggers').find({codeSet:req.params.setCode});
-    let result = await cursor.toArray();
-    await client.close();
-    res.render('legomasters/set.ejs', { title: 'LegoMasters | Set', result })
-})
-app.get(`/legomasters/blacklist`, async (req:any, res:any)=>{
-    await client.connect();
-    let cursor =  client.db('IT-project').collection('code_diggers').find({type:"blacklist"});
-    let result = await cursor.toArray();
-    await client.close();
 
-    res.render('legomasters/overzichtBlacklist.ejs', { title: 'LegoMasters | Blacklist', result})
-})
 app.get('/legomasters/sort/', (req: any, res: any) => {
     res.render('legomasters/sort/beginordenen.ejs', { title: 'LegoMasters | Ordenen Start' })
 })
-let page : number;
-let done : number;
-let skip : number;
-let aantal : number;
+
 app.post('/legomasters/sort/start', (req:any, res:any)=>{
     aantal = req.body.minifig;
     done = 0;
@@ -127,25 +116,13 @@ app.post('/legomasters/sort/start', (req:any, res:any)=>{
     page = 1;
     res.redirect(`/legomasters/sort/page/${page}`);
 })
-app.post('/legomasters/sort/add', async (req:any, res:any)=>{
-    
-    await client.connect();
-    let splittedChoiceSet = req.body.choiceSet.split("&");
-    let addNewMinifigAndSet: minifigAndSet =
-    {
-        urlImageMinifig: twoSetMinifigList[0][0].set_img_url,
-        codeMinifig: twoSetMinifigList[0][0].set_num,
-        name:twoSetMinifigList[0][0].name,
-        urlImageSet: splittedChoiceSet[1],
-        codeSet: splittedChoiceSet[0],
-        type: 'summary'
-    }
-    const result = await client.db('IT-project').collection('code_diggers').insertOne(addNewMinifigAndSet);
-    console.log(`New listing created with the following id: ${result.insertedId}`);
-    await client.close();
-    twoSetMinifigList[0].shift();
-    twoSetMinifigList[1].shift();
-    page++;
+
+app.post('/legomasters/sort/add', (req:any, res:any)=>{
+    page++; 
+    let selectedSet:any = twoSetMinifigList[1][sortingIndex].results[req.body.choiceSet];
+    twoSetMinifigList[0][sortingIndex].selected_img_url = selectedSet.set_img_url;
+    twoSetMinifigList[0][sortingIndex].selected_num = selectedSet.set_num;
+    putInDb('MinifigAndSet', twoSetMinifigList[0][sortingIndex]);
     done++;
     if (page <= aantal) {
         res.redirect(`/legomasters/sort/page/${page}`);
@@ -154,22 +131,11 @@ app.post('/legomasters/sort/add', async (req:any, res:any)=>{
         res.redirect('/legomasters/sort/result');
     }
 })
-app.post('/legomasters/sort/blacklist', async (req:any, res:any)=>{
-    await client.connect();
-    let addBlacklist: blacklistMinifig =
-    {
-        urlImageMinifig:twoSetMinifigList[0][0].set_img_url,
-        codeMinifig:twoSetMinifigList[0][0].set_num,
-        name:twoSetMinifigList[0][0].name,
-        reason: "Minifig is te lelijk",
-        type:"blacklist"
-    }
-    const result = await client.db('IT-project').collection('code_diggers').insertOne(addBlacklist);
-    console.log(`New listing created with the following id: ${result.insertedId}`);
-    await client.close();
-    twoSetMinifigList[0].shift();
-    twoSetMinifigList[1].shift();
-    page++;
+
+app.post('/legomasters/sort/blacklist', (req:any, res:any)=>{
+    page++; 
+    twoSetMinifigList[0][sortingIndex].reason = "test";
+    putInDb('Blacklist', twoSetMinifigList[0][sortingIndex]);
     if (page <= aantal) {
         res.redirect(`/legomasters/sort/page/${page}`);
     }
@@ -177,9 +143,9 @@ app.post('/legomasters/sort/blacklist', async (req:any, res:any)=>{
         res.redirect('/legomasters/sort/result');
     }
 })
-app.post('/legomasters/sort/skip', (req:any, res:any)=>{
-    twoSetMinifigList[0].push(twoSetMinifigList[0].shift());
-    twoSetMinifigList[1].push(twoSetMinifigList[1].shift());
+
+app.post('/legomasters/sort/skip', async (req:any, res:any)=>{
+    await putInDb('Skipped', twoSetMinifigList[0][sortingIndex]);
     page++;
     skip++;
     if (page <= aantal) {
@@ -189,29 +155,72 @@ app.post('/legomasters/sort/skip', (req:any, res:any)=>{
         res.redirect('/legomasters/sort/result');
     }
 })
+
 app.get('/legomasters/sort/page/:page', (req:any, res:any)=>{
+    if (page != 1) {
+        if (skippedMinifigs.includes(twoSetMinifigList[0][sortingIndex])) {
+            delSkipped(twoSetMinifigList[0][sortingIndex].set_num);
+        }
+        else {
+            sendIndex(twoSetMinifigList[0][sortingIndex]);
+        }
+        sortingIndex++;   
+    }
     res.render('legomasters/sort/ordenenMain.ejs', { 
         title: 'LegoMasters | Sorting Main',
         minifigs : twoSetMinifigList,
+        index : sortingIndex
     })
 })
-app.get('/legomasters/sort/result', (req:any, res:any)=>{
+
+app.get('/legomasters/sort/result', async (req:any, res:any)=>{
+    if (skippedMinifigs.includes(twoSetMinifigList[0][sortingIndex])) {
+        await delSkipped(twoSetMinifigList[0][sortingIndex].set_num);
+    }
+    else {
+        await sendIndex(twoSetMinifigList[0][sortingIndex]);
+    }
+    await client.close();
     res.render('legomasters/sort/resultaat.ejs', { 
         title: 'LegoMasters | Sorting Result',
         minifigsAdded : done,
         minifigsSkipped : skip
     })
 })
-app.get('/reference', (req: any, res: any) => {
-    res.render('reference.ejs', { title: 'IT Project | References' })
+
+
+app.get('/legomasters/minifig/:minifigCode', async (req:any, res:any)=>{
+    let result= await client.db('IT-project').collection('MinifigAndSet').findOne({set_num:req.params.minifigCode});
+    await client.close();
+    res.render('legomasters/minifig.ejs', { title: 'LegoMasters | Minifigs', result })
+})
+
+app.get('/legomasters/set/:setCode', async (req:any, res:any)=>{
+    await client.connect();
+    let cursor =  client.db('IT-project').collection('MinifigAndSet').find({selected_set_num:req.params.setCode});
+    let result = await cursor.toArray();
+    await client.close();
+    res.render('legomasters/set.ejs', { title: 'LegoMasters | Set', result })
+})
+
+app.get(`/legomasters/blacklist`, async (req:any, res:any)=>{
+    await client.connect();
+    let cursor =  client.db('IT-project').collection('Blacklist').find({});
+    let result = await cursor.toArray();
+    await client.close();
+    res.render('legomasters/overzichtBlacklist.ejs', { title: 'LegoMasters | Blacklist', result})
 })
 
 app.get('/legomasters/summary', async (req: any, res: any) => {
     await client.connect();
-    let cursor =  client.db('IT-project').collection('code_diggers').find({type:"summary"});
+    let cursor =  client.db('IT-project').collection('MinifigAndSet').find({});
     let result = await cursor.toArray();
     await client.close();
     res.render('legomasters/summary.ejs', { title: 'LegoMasters | Summary', result })
+})
+
+app.get('/reference', (req: any, res: any) => {
+    res.render('reference.ejs', { title: 'IT Project | References' })
 })
 
 app.use(function (req: any, res: any) {
