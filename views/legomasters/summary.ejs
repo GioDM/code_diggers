@@ -10,10 +10,10 @@
             </tr>
             <%for (let i = 0; i < result.length; i++) { %>
                 <tr>
-                    <td scope="row"><a href="/legomasters/minifig/<%=result[i].codeMinifig%>"><img alt="imageMinifig" src="<%=result[i].urlImageMinifig%>"></a></td>
-                    <td><a href="/legomasters/minifig/<%=result[i].codeMinifig%>"><%=result[i].name%> (<%=result[i].codeMinifig%>)</a></td>
-                    <td><a href="/legomasters/set/<%=result[i].codeSet%>"><img src="<%=result[i].urlImageSet%>" alt="imageSet"></a></td>
-                    <td><a href="/legomasters/set/<%=result[i].codeSet%>"><%=result[i].codeSet%></a></td>
+                    <td scope="row"><a href="/legomasters/minifig/<%=result[i].set_num%>"><img alt="imageMinifig" src="<%=result[i].set_img_url%>"></a></td>
+                    <td><a href="/legomasters/minifig/<%=result[i].set_num%>"><%=result[i].name%> (<%=result[i].set_num%>)</a></td>
+                    <td><a href="/legomasters/set/<%=result[i].selected_num%>"><img src="<%=result[i].selected_img_url%>" alt="imageSet"></a></td>
+                    <td><a href="/legomasters/set/<%=result[i].selected_num%>"><%=result[i].selected_num%></a></td>
                 </tr>
             <% } %>
         </table>
