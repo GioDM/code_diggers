@@ -143,7 +143,7 @@ app.post('/legomasters/sort/add', (req:any, res:any)=>{
 
 app.post('/legomasters/sort/blacklist', (req:any, res:any)=>{
     page++; 
-    twoSetMinifigList[0][sortingIndex].reason = "test";
+    twoSetMinifigList[0][sortingIndex].reason = req.body.reason;
     putInDb('Blacklist', twoSetMinifigList[0][sortingIndex]);
     if (page <= aantal) {
         res.redirect(`/legomasters/sort/page/${page}`);
