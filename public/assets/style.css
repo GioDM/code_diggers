@@ -192,7 +192,7 @@ input[name=choiceSet]:checked + #btn-add {
     box-sizing: border-box;
     text-align: center;
 }
-#reasonBox .button {
+#reasonBox .btn-close {
     background-color: #ccc;
     display: inline-block;
     border-radius: 3px;
