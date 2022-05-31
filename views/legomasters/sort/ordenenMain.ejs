@@ -2,11 +2,17 @@
     <script>
         function openForm() {
             document.getElementById("reasonBox").style.display = "block";
+            document.getElementById("overlay").style.display = "block";
         }
         function closeForm() {
             document.getElementById("reasonBox").style.display = "none";
+            document.getElementById("overlay").style.display = "none";
+        }
+        function enableButton() {
+            document.getElementById("btn-add").disabled = false;
         }
     </script>
+    <div id="overlay" ></div>
     <center>
             <img alt="fotoMinifig" src=<%=minifigs[0][index].set_img_url%> height="200px" />
             <p><%=minifigs[0][index].name%></p>
@@ -26,12 +32,12 @@
             </form>
 
             <form class="btn-group" action="/legomasters/sort/add" method="post">
-                <input id="btn-add" type="submit" value="Add">
+                <input id="btn-add" type="submit" value="Add" disabled>
                 <h3>Beschikbare Sets</h3>
                 <div>
                     <% for(let i = 0; i<minifigs[1][index].count; i++) { %>
                     <label>
-                        <input type="radio" name="choiceSet" value=<%=i%> required>
+                        <input type="radio" name="choiceSet" onclick="enableButton()" value=<%=i%> required>
                         <img alt="fotoSet" src=<%=minifigs[1][index].results[i].set_img_url%> height="200px" />
                         <p><%=minifigs[1][index].results[i].name%></p>
                     </label>
