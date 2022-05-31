@@ -16,9 +16,10 @@ let sortingIndex : number = 0;
 let skippedMinifigs : any[];
 let arrayParts : any[] = [];
 let page : number;
+let aantal : number;
 let done : number;
 let skip : number;
-let aantal : number;
+let continueSorting : boolean = false;
 
 const getApi = async (api : string):Promise<any> => {
     let result = await axios.get(`https://rebrickable.com/api/v3/lego/${api}/?key=6cd12548f2028a329b97cc9f1aa3899f`);
@@ -53,9 +54,23 @@ const getArrayParts = async(x:any):Promise<void> =>
 const putInDb = async (collection : string, object : any):Promise<void> => {
     await client.connect();
     let result = await client.db('IT-project').collection(collection).insertOne(object);
-    /*if (aantal < page) {
-        await client.close();
-    }*/
+}
+
+const getInfo = async():Promise<void> =>
+{
+    await client.connect();
+    let result = await client.db('IT-project').collection('Session').findOne({name: 'pageIndex'});
+    page = result.index;
+    aantal = result.minifigsAantal;
+    done = result.minifigsDone;
+    skip = result.minifigsSkipped;
+    await client.close();
+}
+
+const sendInfo = async():Promise<void> =>
+{
+    await client.connect();
+    let result = await client.db('IT-project').collection('Session').updateOne({name: 'pageIndex'}, {$set:{index: page, minifigsAantal: aantal, minifigsDone: done, minifigsSkipped: skip}});
 }
 
 const getIndex = async():Promise<void> =>
@@ -114,24 +129,30 @@ app.get('/legomasters/', (req:any, res:any)=>{
 })
 
 
-app.get('/legomasters/sort/', (req: any, res: any) => {
-    res.render('legomasters/sort/beginordenen.ejs', { title: 'LegoMasters | Ordenen Start' })
+app.get('/legomasters/sort/', async (req: any, res: any) => {
+    await getInfo();
+    if (page === 1) {
+        res.render('legomasters/sort/beginordenen.ejs', { title: 'LegoMasters | Ordenen Start' });
+    }
+    else {
+        continueSorting = true;
+        res.redirect(`/legomasters/sort/page/${page}`);
+    }
 })
 
 app.post('/legomasters/sort/start', (req:any, res:any)=>{
-    aantal = req.body.minifig;
+    aantal = parseInt(req.body.minifig);
     done = 0;
     skip = 0;
-    page = 1;
     res.redirect(`/legomasters/sort/page/${page}`);
 })
 
-app.post('/legomasters/sort/add', (req:any, res:any)=>{
-    page++; 
+app.post('/legomasters/sort/add', async (req:any, res:any)=>{
     let selectedSet:any = twoSetMinifigList[1][sortingIndex].results[req.body.choiceSet];
     twoSetMinifigList[0][sortingIndex].selected_img_url = selectedSet.set_img_url;
     twoSetMinifigList[0][sortingIndex].selected_num = selectedSet.set_num;
-    putInDb('MinifigAndSet', twoSetMinifigList[0][sortingIndex]);
+    await putInDb('MinifigAndSet', twoSetMinifigList[0][sortingIndex]);
+    page++; 
     done++;
     if (page <= aantal) {
         res.redirect(`/legomasters/sort/page/${page}`);
@@ -141,10 +162,10 @@ app.post('/legomasters/sort/add', (req:any, res:any)=>{
     }
 })
 
-app.post('/legomasters/sort/blacklist', (req:any, res:any)=>{
-    page++; 
+app.post('/legomasters/sort/blacklist', async (req:any, res:any)=>{
     twoSetMinifigList[0][sortingIndex].reason = req.body.reason;
-    putInDb('Blacklist', twoSetMinifigList[0][sortingIndex]);
+    await putInDb('Blacklist', twoSetMinifigList[0][sortingIndex]);
+    page++; 
     if (page <= aantal) {
         res.redirect(`/legomasters/sort/page/${page}`);
     }
@@ -165,16 +186,21 @@ app.post('/legomasters/sort/skip', async (req:any, res:any)=>{
     }
 })
 
-app.get('/legomasters/sort/page/:page', (req:any, res:any)=>{
-    if (page != 1) {
+app.get('/legomasters/sort/page/:page', async (req:any, res:any)=>{
+    if (page != 1 && continueSorting == false) {
         if (skippedMinifigs.includes(twoSetMinifigList[0][sortingIndex])) {
-            delSkipped(twoSetMinifigList[0][sortingIndex].set_num);
+            await delSkipped(twoSetMinifigList[0][sortingIndex].set_num);
         }
         else {
-            sendIndex(twoSetMinifigList[0][sortingIndex]);
+            await sendIndex(twoSetMinifigList[0][sortingIndex]);
         }
+        await sendInfo();
         sortingIndex++;   
     }
+    else {
+        continueSorting = false;
+    }
+    await client.close();
     res.render('legomasters/sort/ordenenMain.ejs', { 
         title: 'LegoMasters | Sorting Main',
         minifigs : twoSetMinifigList,
@@ -189,6 +215,9 @@ app.get('/legomasters/sort/result', async (req:any, res:any)=>{
     else {
         await sendIndex(twoSetMinifigList[0][sortingIndex]);
     }
+    sortingIndex++;
+    page = 1;
+    await sendInfo();
     await client.close();
     res.render('legomasters/sort/resultaat.ejs', { 
         title: 'LegoMasters | Sorting Result',
