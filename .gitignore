@@ -1,6 +1,9 @@
 # npm
-node_modules
+/node_modules
 package-lock.json
 *.log
 *.gz
-tsconfig.json
+npm-debug.log
+.DS_Store
+/*.env
+.vscode

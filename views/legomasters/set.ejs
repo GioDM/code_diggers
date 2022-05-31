@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <%- include("../header.ejs") -%>
 <div>
     <img src="<%=result[0].selected_img_url%>" alt="imageSet">
@@ -19,4 +20,27 @@
         <% } %>
     </tr>
 </table>
+=======
+<%- include("../header.ejs") -%>
+<div>
+    <img src="" alt="imageSet">
+    <div>
+        <div>
+            Naam: Set
+        </div>
+    </div>
+</div>
+<table id="setTable">
+    <tr>
+        <% for (let i = 0;i < 5;i++) { %>
+            <th>Minifig <%= i+1 %></th>
+        <% } %>
+    </tr>
+    <tr>
+        <% for (let i = 0;i < 5;i++) { %>
+            <td><a href="minifig.ejs"><img src="<% i %>"  id="imageMinifig" alt="imageMinifig" ></a></td>
+        <% } %>
+    </tr>
+</table>
+>>>>>>> master
 <%- include("../footer.ejs") -%>
