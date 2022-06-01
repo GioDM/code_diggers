@@ -254,6 +254,12 @@ app.get(`/legomasters/blacklist`, async (req:any, res:any)=>{
     await client.close();
     res.render('legomasters/overzichtBlacklist.ejs', { title: 'LegoMasters | Blacklist', result})
 })
+app.post('/legomasters/blacklist/reason', async (req:any, res:any)=>{
+    await client.connect();
+    await client.db('IT-project').collection('Blacklist').updateOne({name:req.body.name}, {$set:{reason:req.body.reason}});
+    await client.close();
+    res.redirect('/legomasters/blacklist');
+})
 
 app.get('/legomasters/summary', async (req: any, res: any) => {
     await client.connect();
