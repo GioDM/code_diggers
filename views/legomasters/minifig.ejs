@@ -1,11 +1,11 @@
 <%- include("../header.ejs") -%>
 <div>
     <div>
-        <img src="https://cdn.rebrickable.com/media/thumbs/sets/fig-000537/75532.jpg/800x800p.jpg?1640694285.5145605" alt="Legofigure" height="250em">
+        <img alt="imageMinifig" src="<%=result.set_img_url%>">
     </div>
     <div>
         <div>
-            Naam: Dummy
+            Naam: <%=result.name%> (<%=result.set_num%>)
         </div>
         <div>
             Bouwjaar: Dummy
@@ -14,21 +14,11 @@
 </div>
 <div>
     <h3>Onderdelen</h3>
-    <div>
-        <h5>Headware</h5>
-        <a href=""><img src="https://cdn.rebrickable.com/media/thumbs/parts/elements/6144372.jpg/250x250p.jpg?1642866637.8878014" height="150em"></a>
-    </div>
-    <div>
-        <h5>Head</h5>
-        <a href=""><img src="https://cdn.rebrickable.com/media/thumbs/parts/elements/6144375.jpg/250x250p.jpg?1642797540.0047257" height="150em"></a>
-    </div>
-    <div>
-        <h5>Body</h5>
-        <a href=""><img src="https://cdn.rebrickable.com/media/thumbs/parts/elements/6144377.jpg/250x250p.jpg?1643709918.2139933" height="150em"></a>
-    </div>
-    <div>
-        <h5>Legs</h5>
-        <a href=""><img src="https://cdn.rebrickable.com/media/thumbs/parts/elements/6144394.jpg/250x250p.jpg?1643708322.5589442" height="150em"></a>
-    </div>
+    <% for (let i = 0; i < arrayParts.length; i++) { %>
+        <div>
+            <h5><%=arrayParts[i].name%></h5>
+            <img src="<%=arrayParts[i].part_img_url%>">
+        </div>
+    <% } %>
 </div>
 <%- include("../footer.ejs") -%>
