@@ -99,8 +99,7 @@ const getSkippedArray = async():Promise<void> =>
 const delSkipped = async(toDelete : any):Promise<void> =>
 {
     await client.connect();
-    client.db('IT-project').collection('Skipped').deleteOne({set_num: toDelete});
-    await client.close();
+    await client.db('IT-project').collection('Skipped').deleteOne({set_num: toDelete});
 }
 
 
