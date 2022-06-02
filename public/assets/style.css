@@ -178,7 +178,7 @@ input[name=choiceSet]:checked + #btn-add {
 
 
 /* popup */
-#reasonBox
+.reasonBox
 {
     display:none;
     background-color: #eee;
@@ -193,7 +193,7 @@ input[name=choiceSet]:checked + #btn-add {
     box-sizing: border-box;
     text-align: center;
 }
-#reasonBox .btn-close {
+.reasonBox .btn-close {
     background-color: #ccc;
     display: inline-block;
     border-radius: 3px;
