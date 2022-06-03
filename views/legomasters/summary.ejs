@@ -15,6 +15,12 @@
                     <td><a href="/legomasters/minifig/<%=result[i].set_num%>"><%=result[i].name%> (<%=result[i].set_num%>)</a></td>
                     <td><a href="/legomasters/set/<%=result[i].selected_num%>"><img src="<%=result[i].selected_img_url%>" alt="imageSet"></a></td>
                     <td><a href="/legomasters/set/<%=result[i].selected_num%>"><%=result[i].selected_num%></a></td>
+                    <td>
+                    <form action="/legomasters/summary/delete" method="post">
+                        <input id="btn-delete" type="submit" value="Delete">
+                        <input type="hidden" name="minifig" value="<%=result[i].set_num%>">
+                    </form>
+                    </td>
                 </tr>
             <% } %>
         </table>

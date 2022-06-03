@@ -268,7 +268,12 @@ app.get('/legomasters/summary', async (req: any, res: any) => {
     await client.close();
     res.render('legomasters/summary.ejs', { title: 'LegoMasters | Summary', result })
 })
-
+app.post('/legomasters/summary/delete', async (req: any, res: any) => {
+    let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${req.body.minifig}/?key=6cd12548f2028a329b97cc9f1aa3899f`);
+    await putInDb('Skipped', result.data);
+    await client.db('IT-project').collection("MinifigAndSet").deleteOne({name: result.data.name});
+    res.redirect('/legomasters/summary');
+})
 app.get('/reference', (req: any, res: any) => {
     res.render('reference.ejs', { title: 'IT Project | References' })
 })
