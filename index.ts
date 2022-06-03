@@ -67,7 +67,7 @@ const getInfo = async():Promise<void> =>
     await client.close();
 }
 
-const sendInfo = async():Promise<void> =>
+const sendInfo = async(page : number, done : number, skip : number):Promise<void> =>
 {
     await client.connect();
     let result = await client.db('IT-project').collection('Session').updateOne({name: 'pageIndex'}, {$set:{index: page, minifigsAantal: aantal, minifigsDone: done, minifigsSkipped: skip}});
@@ -102,6 +102,17 @@ const delSkipped = async(toDelete : any):Promise<void> =>
     await client.db('IT-project').collection('Skipped').deleteOne({set_num: toDelete});
 }
 
+const resetDb = async():Promise<void> => 
+{
+    await client.connect();
+    await client.db('IT-project').collection('MinifigAndSet').deleteMany({});
+    await client.db('IT-project').collection('Blacklist').deleteMany({});
+    await client.db('IT-project').collection('Skipped').deleteMany({});
+    await client.db('IT-project').collection('Session').updateOne({name: 'minifigIndex'}, {$set:{index: 0}});
+    await client.db('IT-project').collection('Session').updateOne({name: 'pageIndex'}, {$set:{index: 0, minifigsAantal: 0, minifigsDone: 0, minifigsSkipped: 0}});
+    await client.close();
+    sortingIndex = 0;
+}
 
 ( async() => {
     await getIndex();
@@ -130,7 +141,7 @@ app.get('/legomasters/', (req:any, res:any)=>{
 
 app.get('/legomasters/sort/', async (req: any, res: any) => {
     await getInfo();
-    if (page === 1) {
+    if (page === 0) {
         res.render('legomasters/sort/beginordenen.ejs', { title: 'LegoMasters | Ordenen Start' });
     }
     else {
@@ -139,10 +150,10 @@ app.get('/legomasters/sort/', async (req: any, res: any) => {
     }
 })
 
-app.post('/legomasters/sort/start', (req:any, res:any)=>{
+app.post('/legomasters/sort/start', async (req:any, res:any)=>{
     aantal = parseInt(req.body.minifig);
-    done = 0;
-    skip = 0;
+    page = 1;
+    await sendInfo(1, 0, 0);
     res.redirect(`/legomasters/sort/page/${page}`);
 })
 
@@ -193,7 +204,7 @@ app.get('/legomasters/sort/page/:page', async (req:any, res:any)=>{
         else {
             await sendIndex(twoSetMinifigList[0][sortingIndex]);
         }
-        await sendInfo();
+        await sendInfo(page, done, skip);
         sortingIndex++;   
     }
     else {
@@ -215,8 +226,7 @@ app.get('/legomasters/sort/result', async (req:any, res:any)=>{
         await sendIndex(twoSetMinifigList[0][sortingIndex]);
     }
     sortingIndex++;
-    page = 1;
-    await sendInfo();
+    await sendInfo(0, 0, 0);
     await client.close();
     res.render('legomasters/sort/resultaat.ejs', { 
         title: 'LegoMasters | Sorting Result',
@@ -269,8 +279,19 @@ app.get('/legomasters/summary', async (req: any, res: any) => {
     res.render('legomasters/summary.ejs', { title: 'LegoMasters | Summary', result })
 })
 
+app.post('/legomasters/reset', async (req: any, res: any) => {
+    if (req.body.password === 'Tennis') {
+        await resetDb();
+        res.redirect('/legomasters/');
+    }
+    else {
+        let message = "Foutief wachtwoord!";
+        res.render('reference.ejs', { title: 'IT Project | References', message });
+    }
+})
+
 app.get('/reference', (req: any, res: any) => {
-    res.render('reference.ejs', { title: 'IT Project | References' })
+    res.render('reference.ejs', { title: 'IT Project | References', message:'Wachwoord...' })
 })
 
 app.use(function (req: any, res: any) {
