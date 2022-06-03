@@ -17,7 +17,7 @@
                     <td><a href="/legomasters/set/<%=result[i].selected_num%>"><%=result[i].selected_num%></a></td>
                     <td>
                     <form action="/legomasters/summary/delete" method="post">
-                        <input id="btn-delete" type="submit" value="Delete">
+                        <input type="submit" value="Delete">
                         <input type="hidden" name="minifig" value="<%=result[i].set_num%>">
                     </form>
                     </td>
