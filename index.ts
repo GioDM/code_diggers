@@ -22,13 +22,13 @@ let skip : number;
 let continueSorting : boolean = false;
 
 const getApi = async (api : string):Promise<any> => {
-    let result = await axios.get(`https://rebrickable.com/api/v3/lego/${api}/?key=6cd12548f2028a329b97cc9f1aa3899f`);
+    let result = await axios.get(`https://rebrickable.com/api/v3/lego/${api}/?key=${process.env.API_KEY}`);
     return result.data;
 }
 
 const makeArray = async (list : any):Promise<void> => {
     for (let i = minifigIndex; i < list.results.length; i++) {
-        let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${list.results[i].set_num}/sets/?key=6cd12548f2028a329b97cc9f1aa3899f`);
+        let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${list.results[i].set_num}/sets/?key=${process.env.API_KEY}`);
         if (result.data.count > 1) {
             twoSetMinifigList[0].push(list.results[i]);
             twoSetMinifigList[1].push(result.data);
@@ -36,7 +36,7 @@ const makeArray = async (list : any):Promise<void> => {
         await new Promise(f => setTimeout(f, 1000));
     }
     for (let j = 0; j < skippedMinifigs.length; j++) {
-        let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${skippedMinifigs[j].set_num}/sets/?key=6cd12548f2028a329b97cc9f1aa3899f`);
+        let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${skippedMinifigs[j].set_num}/sets/?key=${process.env.API_KEY}`);
         twoSetMinifigList[0].push(skippedMinifigs[j]);
         twoSetMinifigList[1].push(result.data);
         await new Promise(f => setTimeout(f, 1000));
@@ -44,7 +44,7 @@ const makeArray = async (list : any):Promise<void> => {
 }
 const getArrayParts = async(x:any):Promise<void> =>
 {
-    let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${x.set_num}/parts/?key=6cd12548f2028a329b97cc9f1aa3899f`);
+    let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${x.set_num}/parts/?key=${process.env.API_KEY}`);
     let tempArray = result.data.results;
     for (let i = 0;i < tempArray.length;i++)
     {
@@ -124,7 +124,7 @@ const resetDb = async():Promise<void> =>
 
 
 app.set('view engine', 'ejs');
-app.set('port', 3000);
+app.set('port', process.env.PORT || 3000);
 
 app.use('/public', express.static('public'));
 app.use(express.json({ limit: '1mb' }));
