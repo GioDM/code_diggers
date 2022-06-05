@@ -166,7 +166,7 @@ app.get('/legomasters/sort/', async (req: any, res: any) => {
 })
 
 app.post('/legomasters/sort/start', async (req:any, res:any)=>{
-    aantal = parseInt(req.body.minifigAantal);
+    aantal = parseInt(req.body.minifig);
     page = 1;
     await sendInfo(1, 0, 0);
     res.redirect(`/legomasters/sort/page/${page}`);
