@@ -17,11 +17,11 @@
             <img alt="img-minifig" src=<%=minifigs[0][index].set_img_url%> />
             <p><%=minifigs[0][index].name%></p>
 
-            <form action="/legomasters/sort/skip"  method="post">
-                <button type="submit">Skip</button>
+            <form action="/legomasters/sorteren/skip"  method="post">
+                <button id="btn-skip" type="submit">Skip</button>
             </form>
             <button onclick="openForm()">Blacklist</button>
-            <form action="/legomasters/sort/blacklist" method="post">
+            <form action="/legomasters/sorteren/blacklist" method="post">
                 <div class="reason-box" id="reason-box-id">
                     <textarea name="reason" rows="4" required></textarea>
                     <div>    
@@ -31,7 +31,7 @@
                 </div>
             </form>
 
-            <form action="/legomasters/sort/add" method="post">
+            <form action="/legomasters/sorteren/add" method="post">
                 <button id="btn-add" type="submit" disabled>Add</button>
                 <h3>Beschikbare Sets</h3>
                 <div>

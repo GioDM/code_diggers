@@ -19,7 +19,7 @@ let sortingIndex : number = 0;
 let skippedMinifigs : any[];
 let arrayParts : any[] = [];
 let page : number;
-let aantal : number;
+let amount : number;
 let done : number;
 let skip : number;
 let continueSorting : boolean = false;
@@ -58,8 +58,8 @@ const addToTwoSetList = async(minifig : any):Promise<void> => {
     });
 }
 
-const getArrayParts = async(x:any):Promise<void> => {
-    let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${x.set_num}/parts/?key=${process.env.API_KEY}`);
+const getArrayParts = async(minifig:any):Promise<void> => {
+    let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${minifig.set_num}/parts/?key=${process.env.API_KEY}`);
     let tempArray = result.data.results;
     for (let i = 0;i < tempArray.length;i++) {
         arrayParts.push(tempArray[i].part);
@@ -74,14 +74,14 @@ const getInfo = async():Promise<void> => {
     await client.connect();
     let result = await client.db('IT-project').collection('Session').findOne({name: 'pageIndex'});
     page = result.index;
-    aantal = result.minifigsAantal;
+    amount = result.minifigsAmount;
     done = result.minifigsDone;
     skip = result.minifigsSkipped;
 }
 
-const sendInfo = async(page : number, done : number, skip : number):Promise<void> => {
+const sendInfo = async(page : number, amount : number, done : number, skip : number):Promise<void> => {
     await client.connect();
-    await client.db('IT-project').collection('Session').updateOne({name: 'pageIndex'}, {$set:{index: page, minifigsAantal: aantal, minifigsDone: done, minifigsSkipped: skip}});
+    await client.db('IT-project').collection('Session').updateOne({name: 'pageIndex'}, {$set:{index: page, minifigsAmount: amount, minifigsDone: done, minifigsSkipped: skip}});
 }
 
 const getIndex = async():Promise<void> => {
@@ -113,7 +113,7 @@ const resetDb = async():Promise<void> => {
     await client.db('IT-project').collection('Blacklist').deleteMany({});
     await client.db('IT-project').collection('Skipped').deleteMany({});
     await client.db('IT-project').collection('Session').updateOne({name: 'minifigIndex'}, {$set:{index: 0}});
-    await client.db('IT-project').collection('Session').updateOne({name: 'pageIndex'}, {$set:{index: 0, minifigsAantal: 0, minifigsDone: 0, minifigsSkipped: 0}});
+    await client.db('IT-project').collection('Session').updateOne({name: 'pageIndex'}, {$set:{index: 0, minifigsAmount: 0, minifigsDone: 0, minifigsSkipped: 0}});
     await client.close();
     sortingIndex = 0;
 }
@@ -121,8 +121,8 @@ const resetDb = async():Promise<void> => {
 ( async() => {
     await getIndex();
     await getSkippedArray();
-    await getApi('minifigs').then(x => {
-        makeArray(x);
+    await getApi('minifigs').then(minifigList => {
+        makeArray(minifigList);
     });
 })();
 
@@ -139,59 +139,59 @@ app.get('/',(req:any, res:any)=> {
 });
 
 app.get('/legomasters/', (req:any, res:any) => {
-    res.render('legomasters/landing.ejs', { title: 'LegoMasters | Homescreen' });
+    res.render('legomasters/landing.ejs', { title: 'LegoMasters | Startpagina' });
 });
 
-app.post('/legomasters/sort/', async (req: any, res: any) => {
+app.get('/legomasters/sorteren/', async (req: any, res: any) => {
     await getInfo();
     if (page === 0) {
         let limit = 15;
         if ((twoSetMinifigList[0].length - sortingIndex) < 15) {
             limit = twoSetMinifigList[0].length - sortingIndex;
         }
-        res.render('legomasters/sort/beginordenen.ejs', { title: 'LegoMasters | Ordenen Start', limit });
+        res.render('legomasters/sort/beginordenen.ejs', { title: 'LegoMasters | Sorteren Start', limit });
     }
     else {
         continueSorting = true;
-        res.redirect(`/legomasters/sort/page/${page}`);
+        res.redirect(`/legomasters/sorteren/pagina/${page}`);
     }
 });
 
-app.post('/legomasters/sort/start', async (req:any, res:any) => {
-    aantal = parseInt(req.body.minifig);
+app.post('/legomasters/sorteren/start', async (req:any, res:any) => {
+    amount = parseInt(req.body.minifig);
     page = 1;
-    await sendInfo(1, 0, 0);
-    res.redirect(`/legomasters/sort/page/${page}`);
+    await sendInfo(page, amount, 0, 0);
+    res.redirect(`/legomasters/sorteren/pagina/${page}`);
 });
 
-app.post('/legomasters/sort/add', async (req:any, res:any) => {
+app.post('/legomasters/sorteren/add', async (req:any, res:any) => {
     let selectedSet:any = twoSetMinifigList[1][sortingIndex].results[req.body.choiceSet];
     twoSetMinifigList[0][sortingIndex].selected_img_url = selectedSet.set_img_url;
     twoSetMinifigList[0][sortingIndex].selected_num = selectedSet.set_num;
     await putInDb('MinifigAndSet', twoSetMinifigList[0][sortingIndex]);
     page++; 
     done++;
-    if (page <= aantal) {
-        res.redirect(`/legomasters/sort/page/${page}`);
+    if (page <= amount) {
+        res.redirect(`/legomasters/sorteren/pagina/${page}`);
     }
     else {
-        res.redirect('/legomasters/sort/result');
+        res.redirect('/legomasters/sorteren/resultaat');
     }
 });
 
-app.post('/legomasters/sort/blacklist', async (req:any, res:any) => {
+app.post('/legomasters/sorteren/blacklist', async (req:any, res:any) => {
     twoSetMinifigList[0][sortingIndex].reason = req.body.reason;
     await putInDb('Blacklist', twoSetMinifigList[0][sortingIndex]);
     page++; 
-    if (page <= aantal) {
-        res.redirect(`/legomasters/sort/page/${page}`);
+    if (page <= amount) {
+        res.redirect(`/legomasters/sorteren/pagina/${page}`);
     }
     else {
-        res.redirect('/legomasters/sort/result');
+        res.redirect('/legomasters/sorteren/resultaat');
     }
 });
 
-app.post('/legomasters/sort/skip', async (req:any, res:any) => {
+app.post('/legomasters/sorteren/skip', async (req:any, res:any) => {
     await client.connect();
     let result = await client.db('IT-project').collection('Skipped').countDocuments({set_num: twoSetMinifigList[0][sortingIndex].set_num}, {limit: 1});
     if (result === 0) {
@@ -204,15 +204,15 @@ app.post('/legomasters/sort/skip', async (req:any, res:any) => {
     }
     page++;
     skip++;
-    if (page <= aantal) {
-        res.redirect(`/legomasters/sort/page/${page}`);
+    if (page <= amount) {
+        res.redirect(`/legomasters/sorteren/pagina/${page}`);
     }
     else {
-        res.redirect('/legomasters/sort/result');
+        res.redirect('/legomasters/sorteren/resultaat');
     }
 });
 
-app.post('/legomasters/sort/page/:page', async (req:any, res:any) => {
+app.get('/legomasters/sorteren/pagina/:page', async (req:any, res:any) => {
     if (page != 1 && !continueSorting) {
         await client.connect();
         let result = await client.db('IT-project').collection('Skipped').countDocuments({set_num: twoSetMinifigList[0][sortingIndex].set_num}, {limit: 1});
@@ -222,7 +222,7 @@ app.post('/legomasters/sort/page/:page', async (req:any, res:any) => {
         else if (!skippedAgain) {
             await delSkipped(twoSetMinifigList[0][sortingIndex].set_num);
         }
-        await sendInfo(page, done, skip);
+        await sendInfo(page, amount, done, skip);
         sortingIndex++;
         newSkipped = false;
         skippedAgain = false;
@@ -232,13 +232,13 @@ app.post('/legomasters/sort/page/:page', async (req:any, res:any) => {
     }
     await client.close();
     res.render('legomasters/sort/ordenenMain.ejs', { 
-        title: 'LegoMasters | Sorting Main',
+        title: 'LegoMasters | Sorteerpagina',
         minifigs : twoSetMinifigList,
         index : sortingIndex
     });
 });
 
-app.post('/legomasters/sort/result', async (req:any, res:any) => {
+app.get('/legomasters/sorteren/resultaat', async (req:any, res:any) => {
     await client.connect();
     let result = await client.db('IT-project').collection('Skipped').countDocuments({set_num: twoSetMinifigList[0][sortingIndex].set_num}, {limit: 1});
     if (newSkipped || result === 0) {
@@ -250,16 +250,34 @@ app.post('/legomasters/sort/result', async (req:any, res:any) => {
     newSkipped = false;
     skippedAgain = false;
     sortingIndex++;
-    await sendInfo(0, 0, 0);
+    await sendInfo(0, 0, 0, 0);
     await client.close();
     res.render('legomasters/sort/resultaat.ejs', { 
-        title: 'LegoMasters | Sorting Result',
+        title: 'LegoMasters | Sorteerresultaat',
         minifigsAdded : done,
         minifigsSkipped : skip
     });
 });
 
-app.post('/legomasters/minifig/:minifigCode', async (req:any, res:any) => {
+app.get('/legomasters/overzicht', async (req: any, res: any) => {
+    await client.connect();
+    let cursor =  client.db('IT-project').collection('MinifigAndSet').find({});
+    let result = await cursor.toArray();
+    await client.close();
+    res.render('legomasters/overzicht.ejs', { title: 'LegoMasters | Overzicht', result });
+});
+
+app.post('/legomasters/overzicht/delete', async (req: any, res: any) => {
+    let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${req.body.minifig}/?key=${process.env.API_KEY}`);
+    await putInDb('Skipped', result.data);
+    if (makeArrayDone === true) {
+        await addToTwoSetList(result.data);
+    }
+    await client.db('IT-project').collection("MinifigAndSet").deleteOne({name: result.data.name});
+    res.redirect('/legomasters/overzicht');
+});
+
+app.get('/legomasters/minifig/:minifigCode', async (req:any, res:any) => {
     await client.connect();
     let result = await client.db('IT-project').collection('MinifigAndSet').findOne({set_num:req.params.minifigCode});
     if (result == null) {
@@ -271,7 +289,7 @@ app.post('/legomasters/minifig/:minifigCode', async (req:any, res:any) => {
     arrayParts = [];
 });
 
-app.post('/legomasters/set/:setCode', async (req:any, res:any) => {
+app.get('/legomasters/set/:setCode', async (req:any, res:any) => {
     await client.connect();
     let cursor =  client.db('IT-project').collection('MinifigAndSet').find({selected_num:req.params.setCode});
     let result = await cursor.toArray();
@@ -279,7 +297,7 @@ app.post('/legomasters/set/:setCode', async (req:any, res:any) => {
     res.render('legomasters/set.ejs', { title: 'LegoMasters | Set', result });
 });
 
-app.post(`/legomasters/blacklist`, async (req:any, res:any) => {
+app.get(`/legomasters/blacklist`, async (req:any, res:any) => {
     await client.connect();
     let cursor =  client.db('IT-project').collection('Blacklist').find({});
     let result = await cursor.toArray();
@@ -294,37 +312,13 @@ app.post('/legomasters/blacklist/reason', async (req:any, res:any) => {
     res.redirect('/legomasters/blacklist');
 });
 
-app.post('/legomasters/summary', async (req: any, res: any) => {
-    await client.connect();
-    let cursor =  client.db('IT-project').collection('MinifigAndSet').find({});
-    let result = await cursor.toArray();
-    await client.close();
-    res.render('legomasters/summary.ejs', { title: 'LegoMasters | Summary', result });
-});
-
-app.post('/legomasters/summary/delete', async (req: any, res: any) => {
-    let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${req.body.minifig}/?key=${process.env.API_KEY}`);
-    await putInDb('Skipped', result.data);
-    if (makeArrayDone === true) {
-        await addToTwoSetList(result.data);
-    }
-    await client.db('IT-project').collection("MinifigAndSet").deleteOne({name: result.data.name});
-    res.redirect('/legomasters/summary');
-});
-
-app.post('/legomasters/reset', async (req: any, res: any) => {
-    if (req.body.password === 'Tennis') {
-        await resetDb();
-        res.redirect('/legomasters/');
-    }
-    else {
-        let message = "Foutief wachtwoord!";
-        res.render('reference.ejs', { title: 'IT Project | References', message });
-    }
+app.get('/legomasters/reset', async (req: any, res: any) => {
+    await resetDb();
+    res.redirect('/legomasters/');
 });
 
 app.get('/reference', (req: any, res: any) => {
-    res.render('reference.ejs', { title: 'IT Project | References', message:'Wachwoord...' });
+    res.render('reference.ejs', { title: 'IT Project | References'});
 });
 
 app.use(function (req: any, res: any) {

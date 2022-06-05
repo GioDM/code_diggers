@@ -27,9 +27,9 @@
         <li>Afbeelding legomasters afbeelding projects pagina: <a href="https://www.lego.com/cdn/cs/set/assets/blt65bb8b098c075262/71032.png?fit=bounds&format=png&width=528&height=528&dpr=1">https://www.lego.com/cdn/cs/set/assets/blt65bb8b098c075262/71032.png?fit=bounds&format=png&width=528&height=528&dpr=1</a></li>
     </ul>
 </div>
-<form action="/legomasters/reset" method="post">
-    <input type="text" name="password" placeholder="<%=message%>">
-    <button type="submit">Reset</button>
+<form>
+    <label for="reset">Maak de database leeg en begin opnieuw: </label>
+    <button formaction="/legomasters/reset" name="reset">Reset</button>
 </form>
 
 <%- include("footer.ejs") -%> 

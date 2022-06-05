@@ -16,7 +16,7 @@
                     <td><a href="/legomasters/set/<%=result[i].selected_num%>"><img src="<%=result[i].selected_img_url%>" alt="img-set"></a></td>
                     <td><a href="/legomasters/set/<%=result[i].selected_num%>"><%=result[i].selected_num%></a></td>
                     <td>
-                    <form action="/legomasters/summary/delete" method="post">
+                    <form action="/legomasters/overzicht/delete" method="post">
                         <button type="submit">Delete</button>
                         <input type="hidden" name="minifig" value="<%=result[i].set_num%>">
                     </form>
