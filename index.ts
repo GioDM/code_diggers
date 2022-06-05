@@ -26,13 +26,13 @@ let newSkipped : boolean = false;
 let skippedAgain : boolean = false;
 
 const getApi = async (api : string):Promise<any> => {
-    let result = await axios.get(`https://rebrickable.com/api/v3/lego/${api}/?key=${process.env.api_key}`);
+    let result = await axios.get(`https://rebrickable.com/api/v3/lego/${api}/?key=${process.env.API_KEY}`);
     return result.data;
 }
 
 const makeArray = async (list : any):Promise<void> => {
     for (let i = minifigIndex + 1; i < list.results.length; i++) {
-        let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${list.results[i].set_num}/sets/?key=${process.env.api_key}`);
+        let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${list.results[i].set_num}/sets/?key=${process.env.API_KEY}`);
         if (result.data.count > 1) {
             twoSetsIndexes.push(i);
             twoSetMinifigList[0].push(list.results[i]);
@@ -41,7 +41,7 @@ const makeArray = async (list : any):Promise<void> => {
         await new Promise(f => setTimeout(f, 1000));
     }
     for (let j = 0; j < skippedMinifigs.length; j++) {
-        let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${skippedMinifigs[j].set_num}/sets/?key=${process.env.api_key}`);
+        let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${skippedMinifigs[j].set_num}/sets/?key=${process.env.API_KEY}`);
         twoSetMinifigList[0].push(skippedMinifigs[j]);
         twoSetMinifigList[1].push(result.data);
         await new Promise(f => setTimeout(f, 1000));
@@ -57,7 +57,7 @@ const addToTwoSetList = async(minifig : any):Promise<void> => {
 }
 
 const getArrayParts = async(x:any):Promise<void> => {
-    let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${x.set_num}/parts/?key=${process.env.api_key}`);
+    let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${x.set_num}/parts/?key=${process.env.API_KEY}`);
     let tempArray = result.data.results;
     for (let i = 0;i < tempArray.length;i++) {
         arrayParts.push(tempArray[i].part);
@@ -301,7 +301,7 @@ app.get('/legomasters/summary', async (req: any, res: any) => {
 });
 
 app.post('/legomasters/summary/delete', async (req: any, res: any) => {
-    let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${req.body.minifig}/?key=${process.env.api_key}`);
+    let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${req.body.minifig}/?key=${process.env.API_KEY}`);
     await putInDb('Skipped', result.data);
     if (makeArrayDone === true) {
         await addToTwoSetList(result.data);
