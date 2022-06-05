@@ -53,7 +53,7 @@ const getArrayParts = async(x:any):Promise<void> =>
 }
 const putInDb = async (collection : string, object : any):Promise<void> => {
     await client.connect();
-    let result = await client.db('IT-project').collection(collection).insertOne(object);
+    await client.db('IT-project').collection(collection).insertOne(object);
 }
 
 const getInfo = async():Promise<void> =>
@@ -85,7 +85,7 @@ const sendIndex = async(minifig : any):Promise<void> =>
 {
     await client.connect();
     let newIndex : number = parseInt(minifig.set_num.substr(4,6));
-    let result = await client.db('IT-project').collection('Session').updateOne({name: 'minifigIndex'}, {$set:{index: newIndex}});
+    await client.db('IT-project').collection('Session').updateOne({name: 'minifigIndex'}, {$set:{index: newIndex}});
 }
 
 const getSkippedArray = async():Promise<void> =>
