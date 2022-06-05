@@ -22,13 +22,13 @@ let skip : number;
 let continueSorting : boolean = false;
 
 const getApi = async (api : string):Promise<any> => {
-    let result = await axios.get(`https://rebrickable.com/api/v3/lego/${api}/?key=6cd12548f2028a329b97cc9f1aa3899f`);
+    let result = await axios.get(`https://rebrickable.com/api/v3/lego/${api}/?key=${process.env.API_KEY}`);
     return result.data;
 }
 
 const makeArray = async (list : any):Promise<void> => {
     for (let i = minifigIndex; i < list.results.length; i++) {
-        let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${list.results[i].set_num}/sets/?key=6cd12548f2028a329b97cc9f1aa3899f`);
+        let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${list.results[i].set_num}/sets/?key=${process.env.API_KEY}`);
         if (result.data.count > 1) {
             twoSetMinifigList[0].push(list.results[i]);
             twoSetMinifigList[1].push(result.data);
@@ -36,7 +36,7 @@ const makeArray = async (list : any):Promise<void> => {
         await new Promise(f => setTimeout(f, 1000));
     }
     for (let j = 0; j < skippedMinifigs.length; j++) {
-        let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${skippedMinifigs[j].set_num}/sets/?key=6cd12548f2028a329b97cc9f1aa3899f`);
+        let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${skippedMinifigs[j].set_num}/sets/?key=${process.env.API_KEY}`);
         twoSetMinifigList[0].push(skippedMinifigs[j]);
         twoSetMinifigList[1].push(result.data);
         await new Promise(f => setTimeout(f, 1000));
@@ -44,7 +44,7 @@ const makeArray = async (list : any):Promise<void> => {
 }
 const getArrayParts = async(x:any):Promise<void> =>
 {
-    let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${x.set_num}/parts/?key=6cd12548f2028a329b97cc9f1aa3899f`);
+    let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${x.set_num}/parts/?key=${process.env.API_KEY}`);
     let tempArray = result.data.results;
     for (let i = 0;i < tempArray.length;i++)
     {
@@ -67,7 +67,7 @@ const getInfo = async():Promise<void> =>
     await client.close();
 }
 
-const sendInfo = async():Promise<void> =>
+const sendInfo = async(page : number, done : number, skip : number):Promise<void> =>
 {
     await client.connect();
     let result = await client.db('IT-project').collection('Session').updateOne({name: 'pageIndex'}, {$set:{index: page, minifigsAantal: aantal, minifigsDone: done, minifigsSkipped: skip}});
@@ -102,6 +102,17 @@ const delSkipped = async(toDelete : any):Promise<void> =>
     await client.db('IT-project').collection('Skipped').deleteOne({set_num: toDelete});
 }
 
+const resetDb = async():Promise<void> => 
+{
+    await client.connect();
+    await client.db('IT-project').collection('MinifigAndSet').deleteMany({});
+    await client.db('IT-project').collection('Blacklist').deleteMany({});
+    await client.db('IT-project').collection('Skipped').deleteMany({});
+    await client.db('IT-project').collection('Session').updateOne({name: 'minifigIndex'}, {$set:{index: 0}});
+    await client.db('IT-project').collection('Session').updateOne({name: 'pageIndex'}, {$set:{index: 0, minifigsAantal: 0, minifigsDone: 0, minifigsSkipped: 0}});
+    await client.close();
+    sortingIndex = 0;
+}
 
 ( async() => {
     await getIndex();
@@ -113,7 +124,7 @@ const delSkipped = async(toDelete : any):Promise<void> =>
 
 
 app.set('view engine', 'ejs');
-app.set('port', 3000);
+app.set('port', process.env.PORT || 3000);
 
 app.use('/public', express.static('public'));
 app.use(express.json({ limit: '1mb' }));
@@ -130,7 +141,7 @@ app.get('/legomasters/', (req:any, res:any)=>{
 
 app.get('/legomasters/sort/', async (req: any, res: any) => {
     await getInfo();
-    if (page === 1) {
+    if (page === 0) {
         res.render('legomasters/sort/beginordenen.ejs', { title: 'LegoMasters | Ordenen Start' });
     }
     else {
@@ -139,10 +150,10 @@ app.get('/legomasters/sort/', async (req: any, res: any) => {
     }
 })
 
-app.post('/legomasters/sort/start', (req:any, res:any)=>{
+app.post('/legomasters/sort/start', async (req:any, res:any)=>{
     aantal = parseInt(req.body.minifig);
-    done = 0;
-    skip = 0;
+    page = 1;
+    await sendInfo(1, 0, 0);
     res.redirect(`/legomasters/sort/page/${page}`);
 })
 
@@ -193,7 +204,7 @@ app.get('/legomasters/sort/page/:page', async (req:any, res:any)=>{
         else {
             await sendIndex(twoSetMinifigList[0][sortingIndex]);
         }
-        await sendInfo();
+        await sendInfo(page, done, skip);
         sortingIndex++;   
     }
     else {
@@ -215,8 +226,7 @@ app.get('/legomasters/sort/result', async (req:any, res:any)=>{
         await sendIndex(twoSetMinifigList[0][sortingIndex]);
     }
     sortingIndex++;
-    page = 1;
-    await sendInfo();
+    await sendInfo(0, 0, 0);
     await client.close();
     res.render('legomasters/sort/resultaat.ejs', { 
         title: 'LegoMasters | Sorting Result',
@@ -254,6 +264,12 @@ app.get(`/legomasters/blacklist`, async (req:any, res:any)=>{
     await client.close();
     res.render('legomasters/overzichtBlacklist.ejs', { title: 'LegoMasters | Blacklist', result})
 })
+app.post('/legomasters/blacklist/reason', async (req:any, res:any)=>{
+    await client.connect();
+    await client.db('IT-project').collection('Blacklist').updateOne({name:req.body.name}, {$set:{reason:req.body.reason}});
+    await client.close();
+    res.redirect('/legomasters/blacklist');
+})
 
 app.get('/legomasters/summary', async (req: any, res: any) => {
     await client.connect();
@@ -263,8 +279,19 @@ app.get('/legomasters/summary', async (req: any, res: any) => {
     res.render('legomasters/summary.ejs', { title: 'LegoMasters | Summary', result })
 })
 
+app.post('/legomasters/reset', async (req: any, res: any) => {
+    if (req.body.password === 'Tennis') {
+        await resetDb();
+        res.redirect('/legomasters/');
+    }
+    else {
+        let message = "Foutief wachtwoord!";
+        res.render('reference.ejs', { title: 'IT Project | References', message });
+    }
+})
+
 app.get('/reference', (req: any, res: any) => {
-    res.render('reference.ejs', { title: 'IT Project | References' })
+    res.render('reference.ejs', { title: 'IT Project | References', message:'Wachwoord...' })
 })
 
 app.use(function (req: any, res: any) {
