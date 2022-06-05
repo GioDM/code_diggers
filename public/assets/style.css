@@ -27,8 +27,13 @@ a {
   text-decoration: none;
 }
 
+textarea, select, .edit-reason-box p {
+  color:black;
+}
+
 button {
-  padding: 0.7rem 0.15rem 0.15rem 0.15rem;
+  min-width: 3rem;
+  padding: 0.7rem 0.15rem 0.2rem 0.2rem;
   background: none;
 	border: none;
 	font-family: sans-serif;
@@ -45,6 +50,11 @@ button {
 
 button:hover {
   background-image: url("/public/assets/yellow_legobrick.png");
+}
+
+.set-minifig-img {
+  height: 10rem;
+  width: auto;
 }
 
 footer{
@@ -152,6 +162,11 @@ footer{
 
 /*START OF LANDINGPAGE CSS*/
 
+#banner {
+  width: 100%;
+  height: auto;
+}
+
 /*END OF LANDINGPAGE CSS*/
 
 /*START OF SUMMARY PAGE*/
@@ -167,6 +182,13 @@ footer{
 /*END OF SUMMARY PAGE*/
 
 /* ORDEN PAGINA */
+
+#sets-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+}
+
 input[name=choiceSet] { 
   position: absolute;
   opacity: 0;
@@ -179,30 +201,38 @@ input[name=choiceSet] + img {
 }
 
 input[name=choiceSet]:checked + img {
-  outline: 2px solid #f00;
+  outline: 4px solid #bb0a21;
 }
 
-input[name=choiceSet]:checked + #btn-add {
-  color: red;
-}
+
 /* ORDEN PAGINA */
 
 
 /* popup */
-.reason-box
-{
-    display:none;
-    background-color: #eee;
-    border-radius: 5px;
-    border: 1px solid #aaa;
-    position: fixed;
-    z-index: 2;
-    width: 300px;
-    left: 50%;
-    margin-left: -150px;
-    padding: 6px 8px 8px;
-    box-sizing: border-box;
-    text-align: center;
+.reason-box {
+  background-color: #f0eff4;
+  border-radius: 5px;
+  border: 1px solid #a39ba8;
+  position: absolute;
+  width: 300px;
+  top: 50%;
+  margin-top: -50px;
+  left: 50%;
+  margin-left: -150px;
+  padding: 6px 8px 8px;
+  box-sizing: border-box;
+  text-align: center;
+}
+.edit-reason-box {
+  display: none;
+  background-color: #f0eff4;
+  border-radius: 5px;
+  border: 1px solid #a39ba8;
+  position: relative;
+  width: 300px;
+  padding: 6px 8px 8px;
+  box-sizing: border-box;
+  text-align: center;
 }
 #overlay {
   background-color: rgba(70, 70, 70, 0.4);
