@@ -1,13 +1,21 @@
 <%- include("../../header.ejs") -%>
 
-<form action="/legomasters/sort/start" method="post">
-    <label for="minifig">Hoeveel minifigs wil je ordenen?</label>
-    <select name="minifig">
-       <% for( let i = 0; i < limit; i++ ) { %>
-       <option value="<%= i+1 %>"><%= i+1 %></option>
-       <% } %> 
-    </select>
-    <button type="submit">Verzenden</button>
-</form>
+<% if (limit !=0) { %>
+    <form action="/legomasters/sorteren/start" method="post">
+        <label for="minifig">Hoeveel minifigs wil je ordenen?</label>
+        <select name="minifig">
+        <% for( let i = 0; i < limit; i++ ) { %>
+        <option value="<%= i+1 %>"><%= i+1 %></option>
+        <% } %> 
+        </select>
+        <button type="submit">Verzenden</button>
+    </form>
+<% } else { %>
+    <p>Er zijn geen minifigs meer om te ordenen! <br> Wil je graag opnieuw beginnen, dan kan je op reset klikken of je kan ook minifigs uit het overzicht verwijderen en deze opnieuw sorteren.</p>
+    <form>
+        <button formaction="/legomasters/reset">Reset</button>
+        <button formaction="/legomasters/overzicht">overzicht</button>
+    </form>
+<% } %>
 
 <%- include("../../footer.ejs") -%>
