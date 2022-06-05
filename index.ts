@@ -24,15 +24,15 @@ let continueSorting : boolean = false;
 let makeArrayDone : boolean = false;
 let newSkipped : boolean = false;
 let skippedAgain : boolean = false;
-
+//${process.env.API_KEY}
 const getApi = async (api : string):Promise<any> => {
-    let result = await axios.get(`https://rebrickable.com/api/v3/lego/${api}/?key=${process.env.API_KEY}`);
+    let result = await axios.get(`https://rebrickable.com/api/v3/lego/${api}/?key=54ff0100c80d3055c357b01505e786d6`);
     return result.data;
 }
 
 const makeArray = async (list : any):Promise<void> => {
     for (let i = minifigIndex + 1; i < list.results.length; i++) {
-        let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${list.results[i].set_num}/sets/?key=${process.env.API_KEY}`);
+        let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${list.results[i].set_num}/sets/?key=54ff0100c80d3055c357b01505e786d6`);
         if (result.data.count > 1) {
             twoSetsIndexes.push(i);
             twoSetMinifigList[0].push(list.results[i]);
@@ -41,7 +41,7 @@ const makeArray = async (list : any):Promise<void> => {
         await new Promise(f => setTimeout(f, 1000));
     }
     for (let j = 0; j < skippedMinifigs.length; j++) {
-        let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${skippedMinifigs[j].set_num}/sets/?key=${process.env.API_KEY}`);
+        let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${skippedMinifigs[j].set_num}/sets/?key=54ff0100c80d3055c357b01505e786d6`);
         twoSetMinifigList[0].push(skippedMinifigs[j]);
         twoSetMinifigList[1].push(result.data);
         await new Promise(f => setTimeout(f, 1000));
@@ -58,7 +58,7 @@ const addToTwoSetList = async(minifig : any):Promise<void> => {
 
 const getArrayParts = async(x:any):Promise<void> =>
 {
-    let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${x.set_num}/parts/?key=${process.env.API_KEY}`);
+    let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${x.set_num}/parts/?key=54ff0100c80d3055c357b01505e786d6`);
     let tempArray = result.data.results;
     for (let i = 0;i < tempArray.length;i++)
     {
@@ -166,7 +166,7 @@ app.get('/legomasters/sort/', async (req: any, res: any) => {
 })
 
 app.post('/legomasters/sort/start', async (req:any, res:any)=>{
-    aantal = parseInt(req.body.minifig);
+    aantal = parseInt(req.body.minifigAantal);
     page = 1;
     await sendInfo(1, 0, 0);
     res.redirect(`/legomasters/sort/page/${page}`);
