@@ -1,5 +1,6 @@
 <%- include("../../header.ejs") -%>
 
+<div id="start-sort">
 <% if (limit !=0) { %>
     <form action="/legomasters/sorteren/start" method="post">
         <label for="minifig">Hoeveel minifigs wil je ordenen?</label>
@@ -17,5 +18,6 @@
         <button formaction="/legomasters/overzicht">overzicht</button>
     </form>
 <% } %>
+</div>
 
 <%- include("../../footer.ejs") -%>
