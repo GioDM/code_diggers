@@ -1,44 +1,45 @@
 <%- include("../../header.ejs") -%>
     <script>
         function openForm() {
-            document.getElementById("reason-box-id").style.display = "block";
             document.getElementById("overlay").style.display = "block";
         }
         function closeForm() {
-            document.getElementById("reason-box-id").style.display = "none";
             document.getElementById("overlay").style.display = "none";
         }
         function enableButton() {
             document.getElementById("btn-add").disabled = false;
         }
     </script>
-    <div id="overlay" ></div>
+    <div id="overlay" >
+        <form action="/legomasters/sorteren/blacklist" method="post">
+            <div class="reason-box">
+                <textarea name="reason" rows="4" required></textarea>
+                <div>    
+                    <button type="submit">Blacklist</button>
+                    <button type="button" onclick="closeForm()">Close</button>
+                </div>     
+            </div>
+        </form>
+    </div>
     <center>
-            <img alt="img-minifig" src=<%=minifigs[0][index].set_img_url%> />
+            <img class="set-minifig-img" alt="img-minifig" src=<%=minifigs[0][index].set_img_url%> />
             <p><%=minifigs[0][index].name%></p>
 
-            <form action="/legomasters/sorteren/skip"  method="post">
-                <button id="btn-skip" type="submit">Skip</button>
-            </form>
-            <button onclick="openForm()">Blacklist</button>
-            <form action="/legomasters/sorteren/blacklist" method="post">
-                <div class="reason-box" id="reason-box-id">
-                    <textarea name="reason" rows="4" required></textarea>
-                    <div>    
-                        <button type="submit">Blacklist</button>
-                        <button type="button" onclick="closeForm()">Close</button>
-                    </div>     
-                </div>
-            </form>
+            <div>
+                <button type="submit" form="skip-form">Skip</button>
+                <button onclick="openForm()">Blacklist</button>
+                <button id="btn-add" type="submit" form="sets-form" disabled>Add</button>
+            </div>
 
-            <form action="/legomasters/sorteren/add" method="post">
-                <button id="btn-add" type="submit" disabled>Add</button>
+            <form id="skip-form" action="/legomasters/sorteren/skip" method="post"></form>
+
+            <form id="sets-form" action="/legomasters/sorteren/add" method="post">
                 <h3>Beschikbare Sets</h3>
-                <div>
+                <div id="sets-grid">
                     <% for(let i = 0; i<minifigs[1][index].count; i++) { %>
                     <label>
                         <input type="radio" name="choiceSet" onclick="enableButton()" value=<%=i%> required>
-                        <img alt="img-set" src=<%=minifigs[1][index].results[i].set_img_url%> />
+                        <img class="set-minifig-img" alt="img-set" src=<%=minifigs[1][index].results[i].set_img_url%> />
                         <p><%=minifigs[1][index].results[i].name%></p>
                     </label>
                     <% } %>

@@ -1,6 +1,6 @@
 <%- include("../header.ejs") -%>
 <div>
-    <img src="<%=result[0].selected_img_url%>" alt="img-set">
+    <img class="set-minifig-img" src="<%=result[0].selected_img_url%>" alt="img-set">
     <div>
         <div>
             Code Set: <%=result[0].selected_num%>
@@ -15,7 +15,7 @@
     </tr>
     <tr>
         <% for (let i = 0; i < result.length; i++) { %>
-            <td><a href="/legomasters/minifig/<%=result[i].set_num%>"><img src="<%=result[i].set_img_url%>" alt="img-minifig" ></a></td>
+            <td><a href="/legomasters/minifig/<%=result[i].set_num%>"><img class="set-minifig-img" src="<%=result[i].set_img_url%>" alt="img-minifig" ></a></td>
         <% } %>
     </tr>
 </table>

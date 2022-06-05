@@ -118,6 +118,21 @@ const resetDb = async():Promise<void> => {
     sortingIndex = 0;
 }
 
+const processData = async():Promise<void> => {
+    await client.connect();
+    let result = await client.db('IT-project').collection('Skipped').countDocuments({set_num: twoSetMinifigList[0][sortingIndex].set_num}, {limit: 1});
+    if (newSkipped || result === 0) {
+        await sendIndex();
+    }
+    else if (!skippedAgain) {
+        await delSkipped(twoSetMinifigList[0][sortingIndex].set_num);
+    }
+    await sendInfo(page, amount, done, skip);
+    sortingIndex++;
+    newSkipped = false;
+    skippedAgain = false;
+}
+
 ( async() => {
     await getIndex();
     await getSkippedArray();
@@ -152,7 +167,6 @@ app.get('/legomasters/sorteren/', async (req: any, res: any) => {
         res.render('legomasters/sort/beginordenen.ejs', { title: 'LegoMasters | Sorteren Start', limit });
     }
     else {
-        continueSorting = true;
         res.redirect(`/legomasters/sorteren/pagina/${page}`);
     }
 });
@@ -171,6 +185,7 @@ app.post('/legomasters/sorteren/add', async (req:any, res:any) => {
     await putInDb('MinifigAndSet', twoSetMinifigList[0][sortingIndex]);
     page++; 
     done++;
+    await processData();
     if (page <= amount) {
         res.redirect(`/legomasters/sorteren/pagina/${page}`);
     }
@@ -182,7 +197,8 @@ app.post('/legomasters/sorteren/add', async (req:any, res:any) => {
 app.post('/legomasters/sorteren/blacklist', async (req:any, res:any) => {
     twoSetMinifigList[0][sortingIndex].reason = req.body.reason;
     await putInDb('Blacklist', twoSetMinifigList[0][sortingIndex]);
-    page++; 
+    page++;
+    await processData();
     if (page <= amount) {
         res.redirect(`/legomasters/sorteren/pagina/${page}`);
     }
@@ -204,6 +220,7 @@ app.post('/legomasters/sorteren/skip', async (req:any, res:any) => {
     }
     page++;
     skip++;
+    await processData();
     if (page <= amount) {
         res.redirect(`/legomasters/sorteren/pagina/${page}`);
     }
@@ -213,23 +230,6 @@ app.post('/legomasters/sorteren/skip', async (req:any, res:any) => {
 });
 
 app.get('/legomasters/sorteren/pagina/:page', async (req:any, res:any) => {
-    if (page != 1 && !continueSorting) {
-        await client.connect();
-        let result = await client.db('IT-project').collection('Skipped').countDocuments({set_num: twoSetMinifigList[0][sortingIndex].set_num}, {limit: 1});
-        if (newSkipped || result === 0) {
-            await sendIndex();
-        }
-        else if (!skippedAgain) {
-            await delSkipped(twoSetMinifigList[0][sortingIndex].set_num);
-        }
-        await sendInfo(page, amount, done, skip);
-        sortingIndex++;
-        newSkipped = false;
-        skippedAgain = false;
-    }
-    else {
-        continueSorting = false;
-    }
     await client.close();
     res.render('legomasters/sort/ordenenMain.ejs', { 
         title: 'LegoMasters | Sorteerpagina',
@@ -239,17 +239,6 @@ app.get('/legomasters/sorteren/pagina/:page', async (req:any, res:any) => {
 });
 
 app.get('/legomasters/sorteren/resultaat', async (req:any, res:any) => {
-    await client.connect();
-    let result = await client.db('IT-project').collection('Skipped').countDocuments({set_num: twoSetMinifigList[0][sortingIndex].set_num}, {limit: 1});
-    if (newSkipped || result === 0) {
-        await sendIndex();
-    }
-    else if (!skippedAgain) {
-        await delSkipped(twoSetMinifigList[0][sortingIndex].set_num); 
-    }
-    newSkipped = false;
-    skippedAgain = false;
-    sortingIndex++;
     await sendInfo(0, 0, 0, 0);
     await client.close();
     res.render('legomasters/sort/resultaat.ejs', { 
