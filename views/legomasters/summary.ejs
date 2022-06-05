@@ -11,13 +11,13 @@
             </tr>
             <%for (let i = 0; i < result.length; i++) { %>
                 <tr>
-                    <td scope="row"><a href="/legomasters/minifig/<%=result[i].set_num%>"><img alt="imageMinifig" src="<%=result[i].set_img_url%>"></a></td>
+                    <td scope="row"><a href="/legomasters/minifig/<%=result[i].set_num%>"><img alt="img-minifig" src="<%=result[i].set_img_url%>"></a></td>
                     <td><a href="/legomasters/minifig/<%=result[i].set_num%>"><%=result[i].name%> (<%=result[i].set_num%>)</a></td>
-                    <td><a href="/legomasters/set/<%=result[i].selected_num%>"><img src="<%=result[i].selected_img_url%>" alt="imageSet"></a></td>
+                    <td><a href="/legomasters/set/<%=result[i].selected_num%>"><img src="<%=result[i].selected_img_url%>" alt="img-set"></a></td>
                     <td><a href="/legomasters/set/<%=result[i].selected_num%>"><%=result[i].selected_num%></a></td>
                     <td>
                     <form action="/legomasters/summary/delete" method="post">
-                        <input type="submit" value="Delete">
+                        <button type="submit">Delete</button>
                         <input type="hidden" name="minifig" value="<%=result[i].set_num%>">
                     </form>
                     </td>

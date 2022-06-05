@@ -2,12 +2,12 @@
 
 <form action="/legomasters/sort/start" method="post">
     <label for="minifig">Hoeveel minifigs wil je ordenen?</label>
-    <select name="minifig" id="minifig">
+    <select name="minifig">
        <% for( let i = 0; i < limit; i++ ) { %>
        <option value="<%= i+1 %>"><%= i+1 %></option>
        <% } %> 
     </select>
-    <input type="submit">
+    <button type="submit">Verzenden</button>
 </form>
 
 <%- include("../../footer.ejs") -%>
