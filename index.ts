@@ -12,6 +12,7 @@ const axios = require('axios');
 
 let twoSetMinifigList : any [][] = [[],[]];
 let minifigIndex : number;
+let twoSetsIndexes : number[] = [];
 let sortingIndex : number = 0;
 let skippedMinifigs : any[];
 let arrayParts : any[] = [];
@@ -20,6 +21,9 @@ let aantal : number;
 let done : number;
 let skip : number;
 let continueSorting : boolean = false;
+let makeArrayDone : boolean = false;
+let newSkipped : boolean = false;
+let skippedAgain : boolean = false;
 
 const getApi = async (api : string):Promise<any> => {
     let result = await axios.get(`https://rebrickable.com/api/v3/lego/${api}/?key=${process.env.API_KEY}`);
@@ -27,9 +31,10 @@ const getApi = async (api : string):Promise<any> => {
 }
 
 const makeArray = async (list : any):Promise<void> => {
-    for (let i = minifigIndex; i < list.results.length; i++) {
+    for (let i = minifigIndex + 1; i < list.results.length; i++) {
         let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${list.results[i].set_num}/sets/?key=${process.env.API_KEY}`);
         if (result.data.count > 1) {
+            twoSetsIndexes.push(i);
             twoSetMinifigList[0].push(list.results[i]);
             twoSetMinifigList[1].push(result.data);
         }
@@ -41,7 +46,16 @@ const makeArray = async (list : any):Promise<void> => {
         twoSetMinifigList[1].push(result.data);
         await new Promise(f => setTimeout(f, 1000));
     }
+    makeArrayDone = true;
 }
+
+const addToTwoSetList = async(minifig : any):Promise<void> => {
+    await getApi(`minifigs/${minifig.set_num}/sets`).then(result => {
+        twoSetMinifigList[0].push(minifig);
+        twoSetMinifigList[1].push(result);
+    });
+}
+
 const getArrayParts = async(x:any):Promise<void> =>
 {
     let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${x.set_num}/parts/?key=${process.env.API_KEY}`);
@@ -64,7 +78,6 @@ const getInfo = async():Promise<void> =>
     aantal = result.minifigsAantal;
     done = result.minifigsDone;
     skip = result.minifigsSkipped;
-    await client.close();
 }
 
 const sendInfo = async(page : number, done : number, skip : number):Promise<void> =>
@@ -78,13 +91,12 @@ const getIndex = async():Promise<void> =>
     await client.connect();
     let result = await client.db('IT-project').collection('Session').findOne({name: 'minifigIndex'});
     minifigIndex = result.index;
-    await client.close();
 }
 
-const sendIndex = async(minifig : any):Promise<void> =>
+const sendIndex = async():Promise<void> =>
 {
     await client.connect();
-    let newIndex : number = parseInt(minifig.set_num.substr(4,6));
+    let newIndex : number = twoSetsIndexes[sortingIndex];
     await client.db('IT-project').collection('Session').updateOne({name: 'minifigIndex'}, {$set:{index: newIndex}});
 }
 
@@ -93,7 +105,6 @@ const getSkippedArray = async():Promise<void> =>
     await client.connect();
     let cursor = client.db('IT-project').collection('Skipped').find({});
     skippedMinifigs = await cursor.toArray();
-    await client.close();
 }
 
 const delSkipped = async(toDelete : any):Promise<void> =>
@@ -142,7 +153,11 @@ app.get('/legomasters/', (req:any, res:any)=>{
 app.get('/legomasters/sort/', async (req: any, res: any) => {
     await getInfo();
     if (page === 0) {
-        res.render('legomasters/sort/beginordenen.ejs', { title: 'LegoMasters | Ordenen Start' });
+        let limit = 15;
+        if ((twoSetMinifigList[0].length - sortingIndex) < 15) {
+            limit = twoSetMinifigList[0].length - sortingIndex;
+        }
+        res.render('legomasters/sort/beginordenen.ejs', { title: 'LegoMasters | Ordenen Start', limit });
     }
     else {
         continueSorting = true;
@@ -185,7 +200,16 @@ app.post('/legomasters/sort/blacklist', async (req:any, res:any)=>{
 })
 
 app.post('/legomasters/sort/skip', async (req:any, res:any)=>{
-    await putInDb('Skipped', twoSetMinifigList[0][sortingIndex]);
+    await client.connect();
+    let result = await client.db('IT-project').collection('Skipped').find({set_num: twoSetMinifigList[0][sortingIndex].set_num}).count();
+    if (result === 0) {
+        await putInDb('Skipped', twoSetMinifigList[0][sortingIndex]);
+        newSkipped = true;     
+    }
+    if (makeArrayDone) {
+        await addToTwoSetList(twoSetMinifigList[0][sortingIndex]);
+        skippedAgain = true;
+    }
     page++;
     skip++;
     if (page <= aantal) {
@@ -197,15 +221,19 @@ app.post('/legomasters/sort/skip', async (req:any, res:any)=>{
 })
 
 app.get('/legomasters/sort/page/:page', async (req:any, res:any)=>{
-    if (page != 1 && continueSorting == false) {
-        if (skippedMinifigs.includes(twoSetMinifigList[0][sortingIndex])) {
+    if (page != 1 && !continueSorting) {
+        await client.connect();
+        let result = await client.db('IT-project').collection('Skipped').find({set_num: twoSetMinifigList[0][sortingIndex].set_num}).count();
+        if (newSkipped || result === 0) {
+            await sendIndex();
+        }
+        else if (!skippedAgain) {
             await delSkipped(twoSetMinifigList[0][sortingIndex].set_num);
         }
-        else {
-            await sendIndex(twoSetMinifigList[0][sortingIndex]);
-        }
         await sendInfo(page, done, skip);
-        sortingIndex++;   
+        sortingIndex++;
+        newSkipped = false;
+        skippedAgain = false;
     }
     else {
         continueSorting = false;
@@ -219,12 +247,16 @@ app.get('/legomasters/sort/page/:page', async (req:any, res:any)=>{
 })
 
 app.get('/legomasters/sort/result', async (req:any, res:any)=>{
-    if (skippedMinifigs.includes(twoSetMinifigList[0][sortingIndex])) {
-        await delSkipped(twoSetMinifigList[0][sortingIndex].set_num);
+    await client.connect();
+    let result = await client.db('IT-project').collection('Skipped').find({set_num: twoSetMinifigList[0][sortingIndex].set_num}).count();
+    if (newSkipped || result === 0){
+        await sendIndex();
     }
-    else {
-        await sendIndex(twoSetMinifigList[0][sortingIndex]);
+    else if (!skippedAgain) {
+        await delSkipped(twoSetMinifigList[0][sortingIndex].set_num); 
     }
+    newSkipped = false;
+    skippedAgain = false;
     sortingIndex++;
     await sendInfo(0, 0, 0);
     await client.close();
@@ -278,7 +310,15 @@ app.get('/legomasters/summary', async (req: any, res: any) => {
     await client.close();
     res.render('legomasters/summary.ejs', { title: 'LegoMasters | Summary', result })
 })
-
+app.post('/legomasters/summary/delete', async (req: any, res: any) => {
+    let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${req.body.minifig}/?key=6cd12548f2028a329b97cc9f1aa3899f`);
+    await putInDb('Skipped', result.data);
+    if (makeArrayDone === true) {
+        await addToTwoSetList(result.data);
+    }
+    await client.db('IT-project').collection("MinifigAndSet").deleteOne({name: result.data.name});
+    res.redirect('/legomasters/summary');
+})
 app.post('/legomasters/reset', async (req: any, res: any) => {
     if (req.body.password === 'Tennis') {
         await resetDb();
@@ -289,7 +329,6 @@ app.post('/legomasters/reset', async (req: any, res: any) => {
         res.render('reference.ejs', { title: 'IT Project | References', message });
     }
 })
-
 app.get('/reference', (req: any, res: any) => {
     res.render('reference.ejs', { title: 'IT Project | References', message:'Wachwoord...' })
 })
