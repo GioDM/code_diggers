@@ -7,7 +7,7 @@ const client = new MongoClient(uri, { useUnifiedTopology: true });
 const express = require('express');
 const ejs = require('ejs');
 const app = express();
-require('dotenv').config();
+
 const axios = require('axios');
 
 require('dotenv').config();
@@ -26,7 +26,7 @@ let continueSorting : boolean = false;
 let makeArrayDone : boolean = false;
 let newSkipped : boolean = false;
 let skippedAgain : boolean = false;
-//${process.env.API_KEY}
+
 const getApi = async (api : string):Promise<any> => {
     let result = await axios.get(`https://rebrickable.com/api/v3/lego/${api}/?key=${process.env.API_KEY}`);
     return result.data;
