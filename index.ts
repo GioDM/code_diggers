@@ -194,7 +194,6 @@ app.post('/legomasters/sort/blacklist', async (req:any, res:any) => {
 app.post('/legomasters/sort/skip', async (req:any, res:any) => {
     await client.connect();
     let result = await client.db('IT-project').collection('Skipped').countDocuments({set_num: twoSetMinifigList[0][sortingIndex].set_num}, {limit: 1});
-    console.log(result);
     if (result === 0) {
         await putInDb('Skipped', twoSetMinifigList[0][sortingIndex]);
         newSkipped = true;     
