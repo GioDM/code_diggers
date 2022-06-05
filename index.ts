@@ -139,7 +139,7 @@ app.get('/',(req:any, res:any)=> {
 });
 
 app.get('/legomasters/', (req:any, res:any) => {
-    res.render('legomasters/landing.ejs', { title: 'LegoMasters | Homescreen' });
+    res.render('legomasters/landing.ejs', { title: 'LegoMasters | Startpagina' });
 });
 
 app.get('/legomasters/sorteren/', async (req: any, res: any) => {
@@ -149,7 +149,7 @@ app.get('/legomasters/sorteren/', async (req: any, res: any) => {
         if ((twoSetMinifigList[0].length - sortingIndex) < 15) {
             limit = twoSetMinifigList[0].length - sortingIndex;
         }
-        res.render('legomasters/sort/beginordenen.ejs', { title: 'LegoMasters | Ordenen Start', limit });
+        res.render('legomasters/sort/beginordenen.ejs', { title: 'LegoMasters | Sorteren Start', limit });
     }
     else {
         continueSorting = true;
@@ -232,7 +232,7 @@ app.get('/legomasters/sorteren/pagina/:page', async (req:any, res:any) => {
     }
     await client.close();
     res.render('legomasters/sort/ordenenMain.ejs', { 
-        title: 'LegoMasters | Sorting Main',
+        title: 'LegoMasters | Sorteerpagina',
         minifigs : twoSetMinifigList,
         index : sortingIndex
     });
@@ -253,7 +253,7 @@ app.get('/legomasters/sorteren/resultaat', async (req:any, res:any) => {
     await sendInfo(0, 0, 0, 0);
     await client.close();
     res.render('legomasters/sort/resultaat.ejs', { 
-        title: 'LegoMasters | Sorting Result',
+        title: 'LegoMasters | Sorteerresultaat',
         minifigsAdded : done,
         minifigsSkipped : skip
     });
@@ -264,7 +264,7 @@ app.get('/legomasters/overzicht', async (req: any, res: any) => {
     let cursor =  client.db('IT-project').collection('MinifigAndSet').find({});
     let result = await cursor.toArray();
     await client.close();
-    res.render('legomasters/overzicht.ejs', { title: 'LegoMasters | Summary', result });
+    res.render('legomasters/overzicht.ejs', { title: 'LegoMasters | Overzicht', result });
 });
 
 app.post('/legomasters/overzicht/delete', async (req: any, res: any) => {
