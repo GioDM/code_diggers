@@ -58,8 +58,8 @@ const addToTwoSetList = async(minifig : any):Promise<void> => {
     });
 }
 
-const getArrayParts = async(minifig:any):Promise<void> => {
-    let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${minifig.set_num}/parts/?key=${process.env.API_KEY}`);
+const getArrayParts = async(minifig:string):Promise<void> => {
+    let result = await axios.get(`https://rebrickable.com/api/v3/lego/minifigs/${minifig}/parts/?key=${process.env.API_KEY}`);
     let tempArray = result.data.results;
     for (let i = 0;i < tempArray.length;i++) {
         arrayParts.push(tempArray[i].part);
@@ -267,23 +267,18 @@ app.post('/legomasters/overzicht/delete', async (req: any, res: any) => {
 });
 
 app.get('/legomasters/minifig/:minifigCode', async (req:any, res:any) => {
-    await client.connect();
-    let result = await client.db('IT-project').collection('MinifigAndSet').findOne({set_num:req.params.minifigCode});
-    if (result == null) {
-        result = await client.db('IT-project').collection('Blacklist').findOne({set_num:req.params.minifigCode});
-    }
-    await getArrayParts(result);
-    await client.close();
-    res.render('legomasters/minifig.ejs', { title: 'LegoMasters | Minifigs', result, arrayParts });
+    await getArrayParts(req.params.minifigCode);
+    let minifig : any;
+    await getApi(`/minifigs/${req.params.minifigCode}`).then(result => minifig = result);
+    res.render('legomasters/minifig.ejs', { title: 'LegoMasters | Minifigs', setNum: req.params.minifigCode, name: minifig.name, imgUrl: minifig.set_img_url, arrayParts });
     arrayParts = [];
 });
 
 app.get('/legomasters/set/:setCode', async (req:any, res:any) => {
-    await client.connect();
-    let cursor =  client.db('IT-project').collection('MinifigAndSet').find({selected_num:req.params.setCode});
-    let result = await cursor.toArray();
-    await client.close();
-    res.render('legomasters/set.ejs', { title: 'LegoMasters | Set', result });
+    let setImg = req.query.img;
+    let setCode = (req.params.setCode).replace(/-s\d/, '');
+    let result = await axios.get(`https://rebrickable.com/api/v3/lego/sets/${setCode}/minifigs/?key=${process.env.API_KEY}`);
+    res.render('legomasters/set.ejs', { title: 'LegoMasters | Set', setMinifigs: result.data, fullSetCode: req.params.setCode, setCode ,setImg});
 });
 
 app.get(`/legomasters/blacklist`, async (req:any, res:any) => {

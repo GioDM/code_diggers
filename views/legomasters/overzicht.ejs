@@ -13,7 +13,7 @@
                 <tr>
                     <td scope="row"><center><a href="/legomasters/minifig/<%=result[i].set_num%>"><img class="set-minifig-img" alt="img-minifig" src="<%=result[i].set_img_url%>"></a></center></td>
                     <td><center><a href="/legomasters/minifig/<%=result[i].set_num%>"><%=result[i].name%> (<%=result[i].set_num%>)</a></center></td>
-                    <td><center><a href="/legomasters/set/<%=result[i].selected_num%>"><img class="set-minifig-img" src="<%=result[i].selected_img_url%>" alt="img-set"></a></center></td>
+                    <td><center><a href="/legomasters/set/<%=result[i].selected_num%>?img=<%=result[i].selected_img_url%>"><img src="<%=result[i].selected_img_url%>" alt="img-set"></a></center></td>
                     <td><center><a href="/legomasters/set/<%=result[i].selected_num%>"><%=result[i].selected_num%></a></center></td>
                     <td>
                     <form action="/legomasters/overzicht/delete" method="post">
