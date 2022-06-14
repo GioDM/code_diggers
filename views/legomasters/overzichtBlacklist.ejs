@@ -24,16 +24,16 @@
             </tr>
             <%for (let i=0; i < result.length; i++) { %>
                 <tr>
-                    <td scope="row"><a href="/legomasters/minifig/<%=result[i].set_num%>">
-                        <img class="set-minifig-img" alt="img-minifig" src="<%=result[i].set_img_url%>"></a></td>
+                    <td><a href="/legomasters/minifig/<%=result[i].set_num%>">
+                        <center><img class="set-minifig-img" alt="img-minifig" src="<%=result[i].set_img_url%>"></a></td></center>
                     <td>
-                        <a href="/legomasters/minifig/<%=result[i].set_num%>"><%=result[i].name%> (<%=result[i].set_num%>)</a>
+                        <center><a href="/legomasters/minifig/<%=result[i].set_num%>"><%=result[i].name%> (<%=result[i].set_num%>)</a></center>
                     </td>
                     <td>
-                        <%=result[i].reason%>
+                        <center><%=result[i].reason%></center>
                     </td>
                     <td>
-                        <button id="edit-btn-id<%=i%>" onclick="openForm('<%=i%>')">edit</button>
+                        <center><button id="edit-btn-id<%=i%>" onclick="openForm('<%=i%>')">edit</button></center>
                         <form action="/legomasters/blacklist/reason" method="post">
                             <div class="edit-reason-box" id="reason-box-id<%=i%>">
                                 <input type="hidden" name="name" value="<%=result[i].name%>">

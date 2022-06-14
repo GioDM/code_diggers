@@ -1,20 +1,18 @@
 <%- include("../header.ejs") -%>
-<div>
-    <div>
-        <img class="set-minifig-img" alt="img-minifig" src="<%=imgUrl%>">
+<center>
+    <div id="minifig-info">
+        <h1><%=name%> (<%=setNum%>)</h1>
+            <div>
+                <img class="set-minifig-img" alt="img-minifig" src="<%=imgUrl%>">
+            </div>
     </div>
-    <div>
-        <div>
-            Naam: <%=name%> (<%=setNum%>)
-        </div>
-    </div>
-</div>
-<div>
     <h3>Onderdelen</h3>
+</center>
+<div id="minifig-parts">
     <% for (let i = 0; i < arrayParts.length; i++) { %>
-        <div>
-            <h5><%=arrayParts[i].name%></h5>
-            <img src="<%=arrayParts[i].part_img_url%>">
+        <div id="parts">
+            <center><h5><%=arrayParts[i].name%></h5>
+            <img class="set-minifig-img" src="<%=arrayParts[i].part_img_url%>"></center>
         </div>
     <% } %>
 </div>
