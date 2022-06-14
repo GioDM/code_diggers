@@ -1,7 +1,7 @@
 import { Console, time } from "console";
 import { checkPrime } from "crypto";
 const {MongoClient} = require('mongodb');
-const uri = 'mongodb+srv://phuong:fABJVEkElNOG8qgc@cluster0.bkwrp.mongodb.net/IT-project?retryWrites=true&w=majority';
+const uri = 'mongodb+srv://phuong:Itproject@cluster0.bkwrp.mongodb.net/IT-project?retryWrites=true&w=majority';
 const client = new MongoClient(uri, { useUnifiedTopology: true });
 
 const express = require('express');
