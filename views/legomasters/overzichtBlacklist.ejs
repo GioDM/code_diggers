@@ -14,7 +14,7 @@
         
     </div>
     <center>
-        <h1>Overzicht Blacklist</h1>
+        <h1 class="center">Overzicht Blacklist</h1>
         <table>
             <tr>
                 <th>Picture minifig</th>
@@ -24,16 +24,16 @@
             </tr>
             <%for (let i=0; i < result.length; i++) { %>
                 <tr>
-                    <td><a href="/legomasters/minifig/<%=result[i].set_num%>">
-                        <center><img class="set-minifig-img" alt="img-minifig" src="<%=result[i].set_img_url%>"></a></td></center>
+                    <td><a class="center" href="/legomasters/minifig/<%=result[i].set_num%>">
+                        <img class="set-minifig-img" alt="img-minifig" src="<%=result[i].set_img_url%>"></a></td>
                     <td>
-                        <center><a href="/legomasters/minifig/<%=result[i].set_num%>"><%=result[i].name%> (<%=result[i].set_num%>)</a></center>
+                        <a class="center" href="/legomasters/minifig/<%=result[i].set_num%>"><%=result[i].name%> (<%=result[i].set_num%>)</a>
                     </td>
                     <td>
-                        <center><%=result[i].reason%></center>
+                        <p class="center"><%=result[i].reason%></p>
                     </td>
                     <td>
-                        <center><button id="edit-btn-id<%=i%>" onclick="openForm('<%=i%>')">edit</button></center>
+                        <button class="center" id="edit-btn-id<%=i%>" onclick="openForm('<%=i%>')">edit</button>
                         <form action="/legomasters/blacklist/reason" method="post">
                             <div class="edit-reason-box" id="reason-box-id<%=i%>">
                                 <input type="hidden" name="name" value="<%=result[i].name%>">
