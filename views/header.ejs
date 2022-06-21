@@ -9,6 +9,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
+    <script>
+        function openMenu() {
+            document.getElementById('overlay-menu').style.display = "block";
+    
+        }
+        function closeMenu() {
+            document.getElementById('overlay-menu').style.display = "none";
+        }
+    </script>
 </head>
 <body>
 <header class="menu">
@@ -21,5 +30,14 @@
                 <li><a href="/">Terug naar projecten</a></li>
             </ul>
         </nav>
+        <button id="hamburger" onclick="openMenu()"></button>
     </div>
 </header>
+<div id="overlay-menu">
+    <ul id="hamburger-menu">
+        <li><button id="back-button" onclick="closeMenu()"><img src="public/assets/arrow.png"></button></li>
+        <li><a href="/legomasters/sorteren/">Ordenen minifigures</a></li>
+        <li><a href="/legomasters/overzicht">Overzicht minifigures</a></li>
+        <li><a href="/">Terug naar projecten</a></li>
+    </ul>
+</div>

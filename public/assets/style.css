@@ -142,6 +142,83 @@ table{
   padding: 1rem;
   font-weight: 700;
 }
+
+.menu-wrapper>nav>ul>li>a:hover {
+  background-image: url('red_legobrick.png');
+  background-size: contain;
+  color: white;
+}
+
+#overlay-menu {
+  background-color: rgba(70, 70, 70, 0.4);
+  display: none;
+  position: fixed;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  top: 0;
+}
+
+#hamburger {
+  display: none;
+  height: 35px;
+  min-width: 35px;
+  padding: 0px;
+  margin: 0px;
+  background-image: url('legomenu.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+#hamburger:hover {
+  background-image: url('legomenu.png');
+}
+
+#hamburger-menu {
+  padding-right: 0.5rem;
+  padding-left: 2rem;
+  list-style: none;
+  float: right;
+  height: 100%;
+  background-color: rgb(255, 210, 63);
+}
+
+#hamburger-menu>li>a {
+  margin-top: 1rem;
+  padding: 1rem;
+  display: block;
+  float: right;
+  font-weight: bolder;
+  background-image: url('red_legobrick.png');
+  background-size: contain;
+}
+
+#back-button {
+  margin: 0;
+  width: 70px;
+  padding: 15px 3px 3px 0px;
+  float: right;
+}
+
+#back-button>img {
+  float: right;
+  width: 90%;
+  height: auto;
+}
+
+#back-button:hover {
+  background-image: url('red_legobrick.png');
+}
+
+@media only screen and (max-width: 800px) {
+  #hamburger {
+    display: block;
+  }
+
+  nav {
+    display: none;
+  }
+}
 /*END OF HEADER*/
 
 /*START OF PROJECTPAGE CSS*/
@@ -200,12 +277,23 @@ table{
   background-image: url("https://www.deingenieur.nl/uploads/cache/article_detail_image/uploads/media/5ce26d2a2a33d/Magic-the-Gathering-header.jpg");
 }
 
-@media only screen and (max-width: 1000px) {
+@media only screen and (max-width: 1200px) {
   .link-container {
     height: 52rem;
     width: 46rem;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr;
+    grid-gap: 2rem;
+  }
+}
+
+
+@media only screen and (max-width: 750px) {
+  .link-container {
+    height: 106rem;
+    width: 22rem;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr;
     grid-gap: 2rem;
   }
 }
@@ -233,6 +321,63 @@ table{
 
 #delete-minifig{
   margin-left: 1rem;
+}
+
+.line {
+  background-color: rgb(255, 210, 63);
+  height: 1px;
+  width: 90%;
+  display: none;
+  position: absolute;
+}
+
+.hidden-span {
+  display: none;
+  font-weight: bolder;
+}
+
+.grid-container {
+  margin-top: 5px;
+}
+
+@media only screen and (max-width: 800px) {
+  .overzicht-tabel-header {
+    display: none;
+  }
+  .hidden-span {
+    display: inline;
+  }
+  .line {
+    display: block;
+  }
+  .grid-container {
+    display: grid;
+    grid-template-columns: 3;
+    grid-template-rows: 2;
+  } 
+  .grid-container>td:nth-child(1) {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .grid-container>td:nth-child(2) {
+    align-self: center;
+    grid-column: 2/4;
+    grid-row: 1;
+  }
+  .grid-container>td:nth-child(3) {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .grid-container>td:nth-child(4) {
+    align-self: center;
+    grid-column: 1;
+    grid-row: 2;
+  }
+  .grid-container>td:nth-child(5) {
+    align-self: center;
+    grid-column: 3;
+    grid-row: 2;
+  }
 }
 /*END OF SUMMARY PAGE*/
 
@@ -279,6 +424,10 @@ input[name=choiceSet]:checked + img {
 
 
 /* popup */
+textarea {
+  resize: none;
+}
+
 .reason-box {
   background-color: #f0eff4;
   border-radius: 5px;
@@ -351,3 +500,4 @@ input[name=choiceSet]:checked + img {
       margin: auto;
     }
 }
+/* minifig */
