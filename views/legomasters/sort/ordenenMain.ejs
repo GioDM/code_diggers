@@ -21,11 +21,10 @@
             </div>
         </form>
     </div>
-    <center>
             <img class="set-minifig-img" alt="img-minifig" src=<%=minifigs[0][index].set_img_url%> />
-            <p><%=minifigs[0][index].name%></p>
+            <h4 class="center"><%=minifigs[0][index].name%></h4>
 
-            <div>
+            <div class="center">
                 <button type="submit" form="skip-form">Skip</button>
                 <button onclick="openForm()">Blacklist</button>
                 <button id="btn-add" type="submit" form="sets-form" disabled>Add</button>
@@ -34,16 +33,15 @@
             <form id="skip-form" action="/legomasters/sorteren/skip" method="post"></form>
 
             <form id="sets-form" action="/legomasters/sorteren/add" method="post">
-                <h3>Beschikbare Sets</h3>
+                <h3 class="center">Beschikbare Sets</h3>
                 <div id="sets-grid">
                     <% for(let i = 0; i<minifigs[1][index].count; i++) { %>
                     <label>
                         <input type="radio" name="choiceSet" onclick="enableButton()" value=<%=i%> required>
                         <img class="set-minifig-img" alt="img-set" src=<%=minifigs[1][index].results[i].set_img_url%> />
-                        <p><%=minifigs[1][index].results[i].name%></p>
+                        <p class="center"><%=minifigs[1][index].results[i].name%></p>
                     </label>
                     <% } %>
                 </div>
             </form>
-    </center>
 <%- include("../../footer.ejs") -%>
