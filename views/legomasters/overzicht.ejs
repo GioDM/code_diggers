@@ -3,18 +3,18 @@
         <h1>Overzicht</h1>
         <a href="/legomasters/blacklist"><button class="button-general">Overzicht Blacklist</button></a>
         <table>
-            <tr>
-                <th>Picture minifig</th>
+            <tr class="overzicht-tabel-header">
+                <th>Foto minifig</th>
                 <th>Naam (code)</th>
-                <th>Picture set</th>
-                <th>name set</th>
+                <th>Foto set</th>
+                <th>Code set</th>
             </tr>
             <%for (let i = 0; i < result.length; i++) { %>
-                <tr>
+                <tr class="grid-container">
                     <td scope="row"><center><a href="/legomasters/minifig/<%=result[i].set_num%>"><img class="set-minifig-img" alt="img-minifig" src="<%=result[i].set_img_url%>"></a></center></td>
-                    <td><center><a href="/legomasters/minifig/<%=result[i].set_num%>"><%=result[i].name%> (<%=result[i].set_num%>)</a></center></td>
-                    <td><center><a href="/legomasters/set/<%=result[i].selected_num%>?img=<%=result[i].selected_img_url%>"><img src="<%=result[i].selected_img_url%>" alt="img-set"></a></center></td>
-                    <td><center><a href="/legomasters/set/<%=result[i].selected_num%>"><%=result[i].selected_num%></a></center></td>
+                    <td><center><a href="/legomasters/minifig/<%=result[i].set_num%>"><span class="hidden-span">Minifig: </span><%=result[i].name%> (<%=result[i].set_num%>)</a></center></td>
+                    <td><center><a href="/legomasters/set/<%=result[i].selected_num%>?img=<%=result[i].selected_img_url%>"><img class="set-minifig-img" src="<%=result[i].selected_img_url%>" alt="img-set"></a></center></td>
+                    <td><center><a href="/legomasters/set/<%=result[i].selected_num%>"><span class="hidden-span">Set: </span><%=result[i].selected_num%></a></center></td>
                     <td>
                     <form action="/legomasters/overzicht/delete" method="post">
                         <button id="delete-minifig" type="submit">Delete</button>
@@ -22,6 +22,7 @@
                     </form>
                     </td>
                 </tr>
+                <tr class="line"></tr>
             <% } %>
         </table>
     </center>
