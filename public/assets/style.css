@@ -180,6 +180,26 @@ table{
   background-image: url("https://www.lego.com/cdn/cs/set/assets/blt65bb8b098c075262/71032.png?fit=bounds&format=png&width=528&height=528&dpr=1");
 }
 
+#NBB{
+  background-image: url("https://www.munthuis.be/images/blogs/20200205/0220_Blog.jpg");
+}
+
+#lotr{
+  background-image: url("https://mytvonline.io/wp-content/uploads/2022/02/The-hobbit-and-the-lord-of-the-rings-return-of-the-king.jpg");
+}
+
+#fifa{
+  background-image: url("https://data1.origin.com/asset/content/dam/originx/web/app/games/fifa/fifa-21/gdp/PUB-46687_screenshot-updt/fifa21-Screenshot-12-16x9.jpg/325e8855-ff52-47b0-9070-80d45e0dceca/original.jpg");
+}
+
+#fortnite{
+  background-image: url("https://cdn2.unrealengine.com/Fortnite%2Fblog%2Ffortnite-matchmaking-update-battle-royale%2F09BR_Evergreens_Purple_NewsHeader-1920x1080-de09a58a5107bd3d3a8bd2e16bf519da4ae05e37.jpg");
+}
+
+#magicthegathering{
+  background-image: url("https://www.deingenieur.nl/uploads/cache/article_detail_image/uploads/media/5ce26d2a2a33d/Magic-the-Gathering-header.jpg");
+}
+
 @media only screen and (max-width: 1000px) {
   .link-container {
     height: 52rem;
