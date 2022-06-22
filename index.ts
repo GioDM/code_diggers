@@ -133,14 +133,15 @@ const processData = async():Promise<void> => {
     skippedAgain = false;
 }
 
-( async() => {
+const main = async():Promise<void> => {
     await getIndex();
     await getSkippedArray();
     await getApi('minifigs').then(minifigList => {
         makeArray(minifigList);
     });
-})();
+}
 
+main();
 
 app.set('view engine', 'ejs');
 app.set('port', process.env.PORT || 3000);
@@ -297,11 +298,20 @@ app.post('/legomasters/blacklist/reason', async (req:any, res:any) => {
 });
 
 app.get('/legomasters/reset', async (req: any, res: any) => {
-    await resetDb();
+    if (makeArrayDone) {
+        await resetDb();
+        twoSetMinifigList = [[],[]];
+        skippedMinifigs = [];
+        twoSetsIndexes = [];
+        arrayParts = [];
+        makeArrayDone = false;
+        await main();
+    }
     res.redirect('/legomasters/');
 });
 
 app.get('/reference', (req: any, res: any) => {
+
     res.render('reference.ejs', { title: 'IT Project | References'});
 });
 
